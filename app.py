@@ -11,7 +11,6 @@ import json
 import os
 import random
 import time
-from IPython.display import HTML, clear_output, display
 import ipywidgets as widgets
 
 # --- 1. CONFIGURAZIONE NOME FILE E CARTELLA ALBUM ---

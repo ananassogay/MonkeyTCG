@@ -347,9 +347,11 @@ elif st.session_state.page == "pack_opening":
     st.markdown(html_summary, unsafe_allow_html=True)
     st.write("---")
 
-    col_a, col_b = st.columns(2)
+col_a, col_b = st.columns(2)
     with col_a:
-      if st.button("Torna al Menu 🏠", use_container_width=True):
+      if st.button(
+          "Torna al Menu 🏠", use_container_width=True, key="menu_summary"
+      ):
         st.session_state.page = "menu"
         st.rerun()
     with col_b:
@@ -425,13 +427,17 @@ elif st.session_state.page == "species_detail":
       st.session_state.page = "album"
       st.rerun()
   with col_b2:
-    if st.button("Torna al Menu 🏠", use_container_width=True):
+    if st.button(
+        "Torna al Menu 🏠", use_container_width=True, key="menu_species_detail"
+    ):
       st.session_state.page = "menu"
       st.rerun()
 
 # D. VISUALIZZAZIONE ALBUM GENERALE
 elif st.session_state.page == "album":
-  if st.button("Torna al Menu 🏠", use_container_width=True):
+  if st.button(
+      "Torna al Menu 🏠", use_container_width=True, key="menu_album_top"
+  ):
     st.session_state.page = "menu"
     st.rerun()
 
@@ -510,6 +516,8 @@ elif st.session_state.page == "album":
       st.write("")
 
   st.write("---")
-  if st.button("Torna al Menu 🏠", use_container_width=True):
+  if st.button(
+      "Torna al Menu 🏠", use_container_width=True, key="menu_album_bottom"
+  ):
     st.session_state.page = "menu"
     st.rerun()

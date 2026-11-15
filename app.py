@@ -331,7 +331,7 @@ elif st.session_state.page == "pack_opening":
             </div>
             """
 
-    html_summary += "</div></div>"
+    html_summary += "</div>"
     st.markdown(html_summary, unsafe_allow_html=True)
     st.write("---")
 

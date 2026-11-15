@@ -255,7 +255,7 @@ elif st.session_state.page == "pack_opening":
     )
 
     # === BLOCCO 1: Logica per individuare se la carta è rara e preparare l'effetto ===
-    is_rare_card = r_key in ["RARE", "EPIC", "LEGENDARY", "ULTRA", "EX"]
+    is_rare_card = r_key in ["RARE", "EXRA", "ULRA"]
     extra_style = ""
     if is_rare_card:
         extra_style = "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"

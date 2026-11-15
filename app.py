@@ -175,12 +175,11 @@ if "selected_species" not in st.session_state:
 # A. MENU PRINCIPALE
 if st.session_state.page == "menu":
   st.markdown(
-      """
-        <div style='text-align: center; padding: 30px; background: #f8f9fa; border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>
-            <h2>🐾 iNaturalist TCG - Menu Principale</h2>
-            <p style='color: #6c757d; margin-bottom: 20px;'>Apri le bustine e colleziona tutte le specie nell'album!</p>
-        </div>
-    """,
+      "<div style='text-align: center; padding: 30px; background: #f8f9fa;"
+      " border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>"
+      "<h2>🐾 iNaturalist TCG - Menu Principale</h2><p style='color: #6c757d;"
+      " margin-bottom: 20px;'>Apri le bustine e colleziona tutte le specie"
+      " nell'album!</p></div>",
       unsafe_allow_html=True,
   )
 
@@ -195,41 +194,38 @@ if st.session_state.page == "menu":
       if pack_choice != "Bustina Scimmie":
         st.error("Questo pacchetto non è disponibile!")
       else:
-        # Mostra animazione di apertura
         with st.spinner("Apertura bustina in corso..."):
           st.markdown(
-              """
-                    <style>
-                      @keyframes shake {
-                        0% { transform: translate(1px, 1px) rotate(0deg); }
-                        20% { transform: translate(-3px, 0px) rotate(-3deg); }
-                        40% { transform: translate(3px, 2px) rotate(3deg); }
-                        60% { transform: translate(-1px, -1px) rotate(0deg); }
-                        80% { transform: translate(3px, 1px) rotate(1deg); }
-                        100% { transform: translate(0px, 0px) rotate(0deg); }
-                      }
-                      .pack-container { text-align: center; padding: 20px; }
-                      .booster-pack {
-                        display: inline-block;
-                        background: linear-gradient(135deg, #1b5e20, #4caf50);
-                        border: 4px solid #ffd700;
-                        border-radius: 15px;
-                        width: 220px;
-                        height: 320px;
-                        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-                        animation: shake 0.5s infinite;
-                        color: white;
-                        padding-top: 100px;
-                        font-family: Arial, sans-serif;
-                      }
-                    </style>
-                    <div class='pack-container'>
-                        <div class='booster-pack'>
-                           <h1 style='color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);'>MONKEY<br>PACK</h1>
-                           <p style='font-size: 12px; margin-top: 50px;'>iNaturalist TCG</p>
-                        </div>
-                    </div>
-                """,
+              """<style>
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  20% { transform: translate(-3px, 0px) rotate(-3deg); }
+  40% { transform: translate(3px, 2px) rotate(3deg); }
+  60% { transform: translate(-1px, -1px) rotate(0deg); }
+  80% { transform: translate(3px, 1px) rotate(1deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+.pack-container { text-align: center; padding: 20px; }
+.booster-pack {
+  display: inline-block;
+  background: linear-gradient(135deg, #1b5e20, #4caf50);
+  border: 4px solid #ffd700;
+  border-radius: 15px;
+  width: 220px;
+  height: 320px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  animation: shake 0.5s infinite;
+  color: white;
+  padding-top: 100px;
+  font-family: Arial, sans-serif;
+}
+</style>
+<div class='pack-container'>
+    <div class='booster-pack'>
+       <h1 style='color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);'>MONKEY<br>PACK</h1>
+       <p style='font-size: 12px; margin-top: 50px;'>iNaturalist TCG</p>
+    </div>
+</div>""",
               unsafe_allow_html=True,
           )
           time.sleep(1.5)
@@ -261,28 +257,23 @@ elif st.session_state.page == "pack_opening":
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-    st.markdown(
-        f"""
-        <div style='text-align: center; font-family: Arial;'>
-            <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
-            {new_badge}
-            <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
-                <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
-                <div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);'>
-                    <img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
-                </div>
-                <div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
-                <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
-
-                <div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>
-                    <div>📍 <b>Luogo:</b> {c['place_guess']}</div>
-                    <div>📷 <b>Foto di:</b> {c['user_login']}</div>
-                </div>
-            </div>
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    card_html = f"""<div style='text-align: center; font-family: Arial;'>
+<h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
+{new_badge}
+<div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
+<div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
+<div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);'>
+<img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
+</div>
+<div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
+<div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
+<div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>
+<div>📍 <b>Luogo:</b> {c['place_guess']}</div>
+<div>📷 <b>Foto di:</b> {c['user_login']}</div>
+</div>
+</div>
+</div>"""
+    st.markdown(card_html, unsafe_allow_html=True)
 
     st.write("##")
     btn_label = (
@@ -295,13 +286,10 @@ elif st.session_state.page == "pack_opening":
       st.rerun()
 
   else:
-    # Riepilogo finale delle 5 carte
-    html_summary = f"""
-        <div style='text-align: center;'>
-            <h2>🎉 Riepilogo Pacchetto: Ecco le 5 carte trovate!</h2>
-            <p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state aggiunte alla tua collezione e salvate nell'album.</p>
-            <div style='display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;'>
-        """
+    html_summary = f"""<div style='text-align: center;'>
+<h2>🎉 Riepilogo Pacchetto: Ecco le 5 carte trovate!</h2>
+<p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state aggiunte alla tua collezione e salvate nell'album.</p>
+<div style='display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;'>"""
 
     for i, c in enumerate(pack):
       r_key = c["rarity"].upper()
@@ -311,27 +299,23 @@ elif st.session_state.page == "pack_opening":
 
       summary_badge = ""
       if c.get("is_new", False):
-        summary_badge = """
-                <div style='background: #f1c40f; color: #000; font-size: 9px; font-weight: bold; border-radius: 4px; margin-bottom: 4px; padding: 2px 4px; text-transform: uppercase;'>
-                  ✨ NUOVA!
-                </div>
-              """
+        summary_badge = """<div style='background: #f1c40f; color: #000; font-size: 9px; font-weight: bold; border-radius: 4px; margin-bottom: 4px; padding: 2px 4px; text-transform: uppercase;'>
+✨ NUOVA!
+</div>"""
 
-      html_summary += f"""
-            <div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']};'>
-                {summary_badge}
-                <div style='font-size: 10px; font-weight: bold; margin-bottom: 4px;'>#{i+1} - {c['rarity']}</div>
-                <img src='{c['image_url']}' style='width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-                <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['common_name']}</div>
-                <div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['latin_name']}</div>
-                <div style='font-size: 8px; background: rgba(0,0,0,0.25); padding: 3px; border-radius: 4px; margin-top: 4px; text-align: left; line-height: 1.2;'>
-                    <div>📍 {c['place_guess'][:18]}...</div>
-                    <div>📷 {c['user_login']}</div>
-                </div>
-            </div>
-            """
+      html_summary += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']};'>
+{summary_badge}
+<div style='font-size: 10px; font-weight: bold; margin-bottom: 4px;'>#{i+1} - {c['rarity']}</div>
+<img src='{c['image_url']}' style='width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['common_name']}</div>
+<div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['latin_name']}</div>
+<div style='font-size: 8px; background: rgba(0,0,0,0.25); padding: 3px; border-radius: 4px; margin-top: 4px; text-align: left; line-height: 1.2;'>
+<div>📍 {c['place_guess'][:18]}...</div>
+<div>📷 {c['user_login']}</div>
+</div>
+</div>"""
 
-    html_summary += "</div>"
+    html_summary += "</div></div>"
     st.markdown(html_summary, unsafe_allow_html=True)
     st.write("---")
 
@@ -371,10 +355,10 @@ elif st.session_state.page == "species_detail":
 
   st.markdown(
       f"""<div style='font-family: Arial; text-align: center;'>
-        <h2>📚 Album Dedicato: {c_name}</h2>
-        <p style='font-style: italic; color: #555;'>{l_name} | Rarità: <b>{rarity}</b> | Esemplari collezionati: <b>{len(copies)}</b></p>
-        <p style='color: #27ae60; font-size: 12px; margin-bottom: 20px;'>✨ Stai visualizzando esclusivamente le carte appartenenti a questa specie.</p>
-        </div>""",
+<h2>📚 Album Dedicato: {c_name}</h2>
+<p style='font-style: italic; color: #555;'>{l_name} | Rarità: <b>{rarity}</b> | Esemplari collezionati: <b>{len(copies)}</b></p>
+<p style='color: #27ae60; font-size: 12px; margin-bottom: 20px;'>✨ Stai visualizzando esclusivamente le carte appartenenti a questa specie.</p>
+</div>""",
       unsafe_allow_html=True,
   )
 
@@ -391,22 +375,18 @@ elif st.session_state.page == "species_detail":
     )
     wiki_url = f"https://it.wikipedia.org/wiki/Special:Search?search={c['latin_name']}"
 
-    html_grid += f"""
-        <div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.25); color: {theme['text']};'>
-            <div style='background: #e74c3c; color: white; border-radius: 8px; padding: 2px 6px; font-size: 10px; font-weight: bold; margin-bottom: 6px; display: inline-block;'>Copia #{idx+1}</div>
-            <img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-
-            <div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left; line-height: 1.3;'>
-                <div>📍 <b>Luogo:</b> {c['place_guess']}</div>
-                <div>📷 <b>Foto:</b> {c['user_login']}</div>
-            </div>
-
-            <div style='margin-top: 8px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
-                <a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
-                <a href='{wiki_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>info wiki</a>
-            </div>
-        </div>
-        """
+    html_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.25); color: {theme['text']};'>
+<div style='background: #e74c3c; color: white; border-radius: 8px; padding: 2px 6px; font-size: 10px; font-weight: bold; margin-bottom: 6px; display: inline-block;'>Copia #{idx+1}</div>
+<img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left; line-height: 1.3;'>
+<div>📍 <b>Luogo:</b> {c['place_guess']}</div>
+<div>📷 <b>Foto:</b> {c['user_login']}</div>
+</div>
+<div style='margin-top: 8px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
+<a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
+<a href='{wiki_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>info wiki</a>
+</div>
+</div>"""
   html_grid += "</div>"
   st.markdown(html_grid, unsafe_allow_html=True)
 
@@ -449,10 +429,10 @@ elif st.session_state.page == "album":
 
   st.markdown(
       f"""<div style='font-family: Arial; text-align: center;'>
-        <h2>📖 Album & Pokedex iNaturalist</h2>
-        <p style='color: #666;'>Specie sbloccate: <b>{found_count}</b> su <b>{total_species}</b> totali ({percentage}% completato)<br>
-        <i>💡 Clicca sul pulsante delle copie di qualsiasi carta per aprire il sotto-album dedicato!</i></p>
-        </div>""",
+<h2>📖 Album & Pokedex iNaturalist</h2>
+<p style='color: #666;'>Specie sbloccate: <b>{found_count}</b> su <b>{total_species}</b> totali ({percentage}% completato)<br>
+<i>💡 Clicca sul pulsante delle copie di qualsiasi carta per aprire il sotto-album dedicato!</i></p>
+</div>""",
       unsafe_allow_html=True,
   )
   st.write("---")
@@ -475,13 +455,11 @@ elif st.session_state.page == "album":
         )
 
         st.markdown(
-            f"""
-                <div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
-                    <img src='{sample_card['image_url']}' style='width: 100%; height: 75px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-                    <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
-                    <div style='font-size: 8px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{l_name}</div>
-                </div>
-            """,
+            f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
+<img src='{sample_card['image_url']}' style='width: 100%; height: 75px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
+<div style='font-size: 8px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{l_name}</div>
+</div>""",
             unsafe_allow_html=True,
         )
 
@@ -493,14 +471,12 @@ elif st.session_state.page == "album":
           st.rerun()
       else:
         st.markdown(
-            """
-                <div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
-                    <div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>
-                    <div style='width: 100%; height: 75px; background: #2c3e50; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px;'>❓</div>
-                    <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
-                    <div style='font-size: 8px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
-                </div>
-            """,
+            """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
+<div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>
+<div style='width: 100%; height: 75px; background: #2c3e50; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px;'>❓</div>
+<div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
+<div style='font-size: 8px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
+</div>""",
             unsafe_allow_html=True,
         )
       st.write("")

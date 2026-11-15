@@ -12,7 +12,19 @@ st.set_page_config(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_FILE = os.path.join(BASE_DIR, "scimmie.json")
 TXT_FILE = os.path.join(BASE_DIR, "osservazioni.txt")
-ALBUM_DIR = os.path.join(BASE_DIR, "album_carte")
+
+# Gestione dell'utente basata sui query parameters dell'URL (es. ?user=12345)
+query_params = st.query_params
+if "user" not in query_params:
+    # Se l'utente non ha un ID nell'URL, ne generiamo uno casuale e ricarichiamo la pagina con quell'ID
+    random_user_id = f"player_{random.randint(10000, 99999)}"
+    st.query_params["user"] = random_user_id
+    st.rerun()
+
+current_user = query_params["user"]
+
+# Ogni utente avrà la sua cartella album dedicata!
+ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
 
 if not os.path.exists(ALBUM_DIR):
   os.makedirs(ALBUM_DIR)

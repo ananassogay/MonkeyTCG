@@ -260,22 +260,21 @@ elif st.session_state.page == "pack_opening":
 # 1. Mostriamo intestazione e badge con Streamlit nativo o HTML pulito
     st.markdown(f"<div style='text-align: center; font-family: Arial;'><h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>{new_badge}</div>", unsafe_allow_html=True)
 
-    # 2. Struttura esterna della carta in HTML
+# 2. Struttura esterna della carta in HTML (parte superiore)
     st.markdown(f"""
-    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial;'>
+    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px 16px 0 0; width: 280px; padding: 14px 14px 0 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial; border-bottom: none;'>
     <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 3. Usiamo l'immagine nativa di Streamlit con una chiave unica basata sull'indice.
-    # Questo forza il caricamento pulito ed evita che rimanga l'immagine precedente!
-    col_img1, col_img2, col_img3 = st.columns([1, 2.8, 1])
-    with col_img2:
-        st.image(c['image_url'], width=250, use_container_width=False)
+    # 3. Immagine centrata simmetricamente con le colonne di Streamlit
+    col_l, col_c, col_r = st.columns([1, 4, 1])
+    with col_c:
+        st.image(c['image_url'], width=250)
 
-    # 4. Parte finale della carta (testi e info)
+    # 4. Struttura esterna della carta in HTML (parte inferiore con i testi)
     st.markdown(f"""
-    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial; border-top: none;'>
+    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 0 0 16px 16px; width: 280px; padding: 0 14px 14px 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial; border-top: none;'>
     <div style='font-weight: bold; font-size: 15px; margin-top: 2px;'>{c['common_name']}</div>
     <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
     <div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>

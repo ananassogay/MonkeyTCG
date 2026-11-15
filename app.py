@@ -160,6 +160,37 @@ def draw_card(slot_index):
   save_card_to_album_folder(card_data)
   return card_data
 
+def export_user_album_to_json():
+  """Raccoglie tutte le carte salvate nella cartella dell'utente e crea un unico dizionario JSON per l'export."""
+  all_cards_data = {}
+  if os.path.exists(ALBUM_DIR):
+    for filename in os.listdir(ALBUM_DIR):
+      if filename.endswith(".json"):
+        file_path = os.path.join(ALBUM_DIR, filename)
+        try:
+          with open(file_path, "r", encoding="utf-8") as f:
+            copies = json.load(f)
+            if copies:
+              all_cards_data[filename] = copies
+        except:
+          pass
+  return json.dumps(all_cards_data, ensure_ascii=False, indent=4)
+
+
+def import_user_album_from_json(uploaded_file):
+  """Legge un file JSON caricato dall'utente e ripristina la sua collezione di carte."""
+  try:
+    content = json.load(uploaded_file)
+    if not os.path.exists(ALBUM_DIR):
+      os.makedirs(ALBUM_DIR)
+
+    for filename, copies in content.items():
+      file_path = os.path.join(ALBUM_DIR, filename)
+      with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(copies, f, ensure_ascii=False, indent=4)
+    return True
+  except Exception as e:
+    return False
 
 # --- 4. CONFIGURAZIONE COLORI DI RARITÀ ---
 rarity_theme = {
@@ -559,6 +590,43 @@ elif st.session_state.page == "album":
               unsafe_allow_html=True,
           )
         st.write("")
+
+# --- PANNELLO BACKUP & RIPRISTINO ALBUM ---
+  st.write("---")
+  with st.expander("💾 Backup e Ripristino Collezione (Cambio Dispositivo)"):
+    st.markdown(
+        "<p style='font-size: 13px; color: #555;'>Scarica un file di backup"
+        " per trasferire le tue carte su un altro telefono o ripristina una"
+        " collezione precedentemente salvata.</p>",
+        unsafe_allow_html=True,
+    )
+
+    col_exp, col_imp = st.columns(2)
+
+    # 1. Tasto per il Download / Export
+    with col_exp:
+      json_data = export_user_album_to_json()
+      st.download_button(
+          label="⬇️ Scarica Backup Album",
+          data=json_data,
+          file_name=f"backup_album_{current_user}.json",
+          mime="application/json",
+          use_container_width=True,
+      )
+
+    # 2. Caricamento / Import
+    with col_imp:
+      uploaded_backup = st.file_uploader(
+          "Carica backup (.json)", type=["json"], label_visibility="collapsed"
+      )
+      if uploaded_backup is not None:
+        if st.button("🔄 Ripristina Album", use_container_width=True):
+          if import_user_album_from_json(uploaded_backup):
+            st.success("✅ Album ripristinato con successo!")
+            time.sleep(1)
+            st.rerun()
+          else:
+            st.error("❌ Errore durante il ripristino del file.")
 
   st.write("---")
   if st.button(

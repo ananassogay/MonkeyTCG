@@ -263,7 +263,7 @@ elif st.session_state.page == "pack_opening":
 <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
 <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
 <div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);'>
-<img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
+<img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block; background: #2c3e50 url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><text x=\'50%\' y=\'50%\' font-size=\'24\' text-anchor=\'middle\' dominant-baseline=\'central\' fill=\'%23bdc3c7\'>❓</text></svg>") center no-repeat;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
 </div>
 <div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
 <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>

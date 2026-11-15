@@ -279,14 +279,14 @@ if idx < len(pack):
     st.write("##")
     btn_label = (
         "✨ Mostra il riepilogo del pacchetto"
-        if idx == len(pack) - 1
-        else "Prossima Carta ➡️"
+            if idx == len(pack) - 1
+            else "Prossima Carta ➡️"
     )
-if st.button(btn_label, use_container_width=True, type="primary"):
+        if st.button(btn_label, use_container_width=True, type="primary"):
       st.session_state.current_card_index += 1
       st.rerun()
 
-  else:
+    else:
     html_summary = f"""<div style='text-align: center;'>
 <h2>🎉 Riepilogo Pacchetto: Ecco le 5 carte trovate!</h2>
 <p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state aggiunte alla tua collezione e salvate nell'album.</p>

@@ -177,7 +177,7 @@ if st.session_state.page == "menu":
   st.markdown(
       "<div style='text-align: center; padding: 30px; background: #427a4d;"
       " border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>"
-      "<h2>🐾 iNaturalist TCG - Menu Principale</h2><p style='color: #6c757d;"
+      "<h2>🐾 iNaturalist TCG - Menu Principale</h2><p style='color: #ffffff;"
       " margin-bottom: 20px;'>Apri le bustine e colleziona tutte le specie"
       " nell'album!</p></div>",
       unsafe_allow_html=True,

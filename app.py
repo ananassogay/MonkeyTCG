@@ -242,6 +242,7 @@ if st.session_state.page == "menu":
       st.rerun()
 
 # B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
+# B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
 elif st.session_state.page == "pack_opening":
   pack = st.session_state.current_pack_cards
   idx = st.session_state.current_card_index
@@ -257,14 +258,13 @@ elif st.session_state.page == "pack_opening":
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
+    # Usiamo un div con background-image invece del tag img per azzerare il lag visivo
     card_html = f"""<div style='text-align: center; font-family: Arial;'>
 <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
 {new_badge}
 <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
 <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
-<div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto;'>
-<img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
-</div>
+<div style='background-color: #000; background-image: url("{c['image_url']}"); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto;'></div>
 <div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
 <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
 <div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>
@@ -281,13 +281,7 @@ elif st.session_state.page == "pack_opening":
         if idx == len(pack) - 1
         else "Prossima Carta ➡️"
     )
-    
-    # Quando l'utente clicca, facciamo un micro-ritardo visivo o cambiamo stato,
-    # ma soprattutto grazie allo sfondo nero (#000) nel blocco HTML sopra, 
-    # l'effetto visivo sarà esattamente quello che volevi: schermo nero immediato e poi apparizione della nuova foto.
     if st.button(btn_label, use_container_width=True, type="primary"):
-      # Facciamo una piccola pausa di 0.1 secondi per dare il tempo al browser di pulire la schermata precedente
-      time.sleep(0.1)
       st.session_state.current_card_index += 1
       st.rerun()
 
@@ -312,7 +306,7 @@ elif st.session_state.page == "pack_opening":
       html_summary += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']};'>
 {summary_badge}
 <div style='font-size: 10px; font-weight: bold; margin-bottom: 4px;'>#{i+1} - {c['rarity']}</div>
-<img src='{c['image_url']}' style='width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background-color: #000;' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<div style='background-color: #000; background-image: url("{c['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 100px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);'></div>
 <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['common_name']}</div>
 <div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['latin_name']}</div>
 <div style='font-size: 8px; background: rgba(0,0,0,0.25); padding: 3px; border-radius: 4px; margin-top: 4px; text-align: left; line-height: 1.2;'>

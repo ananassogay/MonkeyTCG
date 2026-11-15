@@ -257,32 +257,27 @@ elif st.session_state.page == "pack_opening":
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-# 1. Mostriamo intestazione e badge con Streamlit nativo o HTML pulito
-    st.markdown(f"<div style='text-align: center; font-family: Arial;'><h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>{new_badge}</div>", unsafe_allow_html=True)
+# 1. Generazione di un piccolo token casuale per forzare il refresh immediato dell'immagine ed evitare il lag
+    img_url_fresh = c['image_url'] + ("&" if "?" in c['image_url'] else "?") + "t=" + str(random.randint(1000, 9999))
 
-# 2. Struttura esterna della carta in HTML (parte superiore)
-    st.markdown(f"""
-    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px 16px 0 0; width: 280px; padding: 14px 14px 0 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial; border-bottom: none;'>
-    <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 3. Immagine centrata simmetricamente con le colonne di Streamlit
-    col_l, col_c, col_r = st.columns([1, 4, 1])
-    with col_c:
-        st.image(c['image_url'], width=250)
-
-    # 4. Struttura esterna della carta in HTML (parte inferiore con i testi)
-    st.markdown(f"""
-    <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 0 0 16px 16px; width: 280px; padding: 0 14px 14px 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']}; font-family: Arial; border-top: none;'>
-    <div style='font-weight: bold; font-size: 15px; margin-top: 2px;'>{c['common_name']}</div>
-    <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
-    <div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>
-    <div>📍 <b>Luogo:</b> {c['place_guess']}</div>
-    <div>📷 <b>Foto di:</b> {c['user_login']}</div>
-    </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # 2. Render della carta in un unico blocco HTML solido e centrato al 100%
+    card_html = f"""<div style='text-align: center; font-family: Arial;'>
+<h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
+{new_badge}
+<div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
+<div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
+<div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto;'>
+<img src='{img_url_fresh}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
+</div>
+<div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
+<div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>
+<div style='background: rgba(0, 0, 0, 0.25); border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 11px; text-align: left; line-height: 1.4;'>
+<div>📍 <b>Luogo:</b> {c['place_guess']}</div>
+<div>📷 <b>Foto di:</b> {c['user_login']}</div>
+</div>
+</div>
+</div>"""
+    st.markdown(card_html, unsafe_allow_html=True)
 
     st.write("##")
     btn_label = (

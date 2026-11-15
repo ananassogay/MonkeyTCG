@@ -471,53 +471,62 @@ elif st.session_state.page == "album":
   )
   st.write("---")
 
-  grid_cols = st.columns(4)
-  for idx, sp in enumerate(species_data):
-    c_name = sp.get("Nome Comune", "Sconosciuto")
-    l_name = sp.get("Nome Latino", "Sconosciuto")
-    safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
+  # GRIGLIA RIGA PER RIGA: raggruppiamo le specie in gruppi da 4 per mantenere l'ordine corretto da sinistra a destra
+  for i in range(0, len(species_data), 4):
+    row_species = species_data[i : i + 4]
+    cols = st.columns(4)
 
-    col_target = grid_cols[idx % 4]
-    with col_target:
-      if safe_name in unlocked_species:
-        copies_list = unlocked_species[safe_name]
-        cnt = len(copies_list)
-        sample_card = copies_list[0]
-        r_key = sample_card["rarity"].upper()
-        theme = rarity_theme.get(
-            r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
-        )
+    for col_idx, sp in enumerate(row_species):
+      c_name = sp.get("Nome Comune", "Sconosciuto")
+      l_name = sp.get("Nome Latino", "Sconosciuto")
+      safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
 
-        st.markdown(
-            f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
+      with cols[col_idx]:
+        if safe_name in unlocked_species:
+          copies_list = unlocked_species[safe_name]
+          cnt = len(copies_list)
+          sample_card = copies_list[0]
+          r_key = sample_card["rarity"].upper()
+          theme = rarity_theme.get(
+              r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
+          )
+
+          st.markdown(
+              f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
 <img src='{sample_card['image_url']}' style='width: 100%; height: 75px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
 <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
 <div style='font-size: 8px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{l_name}</div>
 </div>""",
-            unsafe_allow_html=True,
-        )
+              unsafe_allow_html=True,
+          )
 
-        if st.button(
-            f"x{cnt} copie", key=f"btn_{safe_name}", use_container_width=True
-        ):
-          st.session_state.selected_species = safe_name
-          st.session_state.page = "species_detail"
-          st.rerun()
+          if st.button(
+              f"x{cnt} copie", key=f"btn_{safe_name}", use_container_width=True
+          ):
+            st.session_state.selected_species = safe_name
+            st.session_state.page = "species_detail"
+            st.rerun()
         else:
-            st.markdown(
-            """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
+          st.markdown(
+              """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
 <div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>
 <div style='width: 100%; height: 75px; background: #2c3e50; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px;'>❓</div>
 <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
 <div style='font-size: 8px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
 </div>""",
-            unsafe_allow_html=True,
-        )
-
-        # Mettiamo un pulsante disattivato o un blocco vuoto esteticamente identico allo spazio del tasto copie
-        st.markdown(
-            """<div style='background: rgba(0,0,0,0.1); border: 2px dashed #7f8c8d; border-top: none; border-radius: 0 0 10px 10px; padding: 10px 6px; text-align: center; font-size: 11px; color: #7f8c8d; font-family: Arial; font-weight: bold;'>
+              unsafe_allow_html=True,
+          )
+          st.markdown(
+              """<div style='background: rgba(0,0,0,0.1); border: 2px dashed #7f8c8d; border-top: none; border-radius: 0 0 10px 10px; padding: 10px 6px; text-align: center; font-size: 11px; color: #7f8c8d; font-family: Arial; font-weight: bold;'>
 🔒 x0 copie
 </div>""",
-            unsafe_allow_html=True,
-        )
+              unsafe_allow_html=True,
+          )
+        st.write("")
+
+  st.write("---")
+  if st.button(
+      "Torna al Menu 🏠", use_container_width=True, key="menu_album_bottom"
+  ):
+    st.session_state.page = "menu"
+    st.rerun()

@@ -503,7 +503,7 @@ elif st.session_state.page == "album":
           st.session_state.selected_species = safe_name
           st.session_state.page = "species_detail"
           st.rerun()
-    else:
+        else:
         st.markdown(
             """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
 <div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>

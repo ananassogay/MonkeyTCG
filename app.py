@@ -294,7 +294,7 @@ elif st.session_state.page == "pack_opening":
 
     # ... (tutto il resto del codice della carta) ...
     st.markdown(card_html, unsafe_allow_html=True)
-    # === BLOCCO 3: Effetto sonoro automatico se la carta è rara ===
+
     # Suona l'audio SOLO se la carta è una nuova scoperta!
     if is_new_card:
       st.markdown(

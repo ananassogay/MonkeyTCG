@@ -246,7 +246,7 @@ elif st.session_state.page == "pack_opening":
   pack = st.session_state.current_pack_cards
   idx = st.session_state.current_card_index
 
-  if idx < len(pack):
+if idx < len(pack):
     c = pack[idx]
     r_key = c["rarity"].upper()
     theme = rarity_theme.get(
@@ -257,11 +257,7 @@ elif st.session_state.page == "pack_opening":
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-# 1. Generazione di un piccolo token casuale per forzare il refresh immediato dell'immagine ed evitare il lag
-    img_url_fresh = c['image_url'] + ("&" if "?" in c['image_url'] else "?") + "t=" + str(random.randint(1000, 9999))
-
-    # 2. Render della carta in un unico blocco HTML solido e centrato al 100%
-card_html = f"""<div style='text-align: center; font-family: Arial;'>
+    card_html = f"""<div style='text-align: center; font-family: Arial;'>
 <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
 {new_badge}
 <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>

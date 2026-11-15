@@ -275,13 +275,19 @@ elif st.session_state.page == "pack_opening":
 </div>"""
     st.markdown(card_html, unsafe_allow_html=True)
 
-    st.write("##")
+st.write("##")
     btn_label = (
         "✨ Mostra il riepilogo del pacchetto"
         if idx == len(pack) - 1
         else "Prossima Carta ➡️"
     )
+    
+    # Quando l'utente clicca, facciamo un micro-ritardo visivo o cambiamo stato,
+    # ma soprattutto grazie allo sfondo nero (#000) nel blocco HTML sopra, 
+    # l'effetto visivo sarà esattamente quello che volevi: schermo nero immediato e poi apparizione della nuova foto.
     if st.button(btn_label, use_container_width=True, type="primary"):
+      # Facciamo una piccola pausa di 0.1 secondi per dare il tempo al browser di pulire la schermata precedente
+      time.sleep(0.1)
       st.session_state.current_card_index += 1
       st.rerun()
 

@@ -271,7 +271,7 @@ elif st.session_state.page == "pack_opening":
     # Questo forza il caricamento pulito ed evita che rimanga l'immagine precedente!
     col_img1, col_img2, col_img3 = st.columns([1, 2.8, 1])
     with col_img2:
-        st.image(c['image_url'], width=250, use_container_width=False, key=f"card_img_{idx}")
+        st.image(c['image_url'], width=250, use_container_width=False)
 
     # 4. Parte finale della carta (testi e info)
     st.markdown(f"""

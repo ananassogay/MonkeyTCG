@@ -254,15 +254,30 @@ elif st.session_state.page == "pack_opening":
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
 
+    # === BLOCCO 1: Logica per individuare se la carta è rara e preparare l'effetto ===
+    is_rare_card = r_key in ["RARE", "EPIC", "LEGENDARY", "ULTRA", "EX"]
+    extra_style = ""
+    if is_rare_card:
+        extra_style = "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"
+
     new_badge = ""
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-    # Usiamo un div con background-image invece del tag img per azzerare il lag visivo
+    # === BLOCCO 2: Iniezione dello stile CSS e la carta aggiornata con {extra_style} ===
+    st.markdown("""
+    <style>
+    @keyframes pulseGlow {
+        0% { border-color: #f1c40f; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5), 0 10px 25px rgba(0,0,0,0.3); }
+        100% { border-color: #e74c3c; box-shadow: 0 0 25px rgba(231, 76, 60, 0.8), 0 10px 25px rgba(0,0,0,0.3); }
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     card_html = f"""<div style='text-align: center; font-family: Arial;'>
 <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
 {new_badge}
-<div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
+<div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; margin: 0 auto; color: {theme['text']}; {extra_style}'>
 <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
 <div style='background-color: #000; background-image: url("{c['image_url']}"); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto;'></div>
 <div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
@@ -274,6 +289,10 @@ elif st.session_state.page == "pack_opening":
 </div>
 </div>"""
     st.markdown(card_html, unsafe_allow_html=True)
+
+    # === BLOCCO 3: Effetto sonoro automatico se la carta è rara ===
+    if is_rare_card:
+        st.markdown("<audio src='https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3' autoplay></audio>", unsafe_allow_html=True)
 
     st.write("##")
     btn_label = (

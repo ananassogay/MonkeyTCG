@@ -246,7 +246,7 @@ elif st.session_state.page == "pack_opening":
   pack = st.session_state.current_pack_cards
   idx = st.session_state.current_card_index
 
-if idx < len(pack):
+  if idx < len(pack):
     c = pack[idx]
     r_key = c["rarity"].upper()
     theme = rarity_theme.get(
@@ -279,14 +279,14 @@ if idx < len(pack):
     st.write("##")
     btn_label = (
         "✨ Mostra il riepilogo del pacchetto"
-            if idx == len(pack) - 1
-            else "Prossima Carta ➡️"
+        if idx == len(pack) - 1
+        else "Prossima Carta ➡️"
     )
-        if st.button(btn_label, use_container_width=True, type="primary"):
+    if st.button(btn_label, use_container_width=True, type="primary"):
       st.session_state.current_card_index += 1
       st.rerun()
 
-    else:
+  else:
     html_summary = f"""<div style='text-align: center;'>
 <h2>🎉 Riepilogo Pacchetto: Ecco le 5 carte trovate!</h2>
 <p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state aggiunte alla tua collezione e salvate nell'album.</p>
@@ -307,7 +307,7 @@ if idx < len(pack):
       html_summary += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']};'>
 {summary_badge}
 <div style='font-size: 10px; font-weight: bold; margin-bottom: 4px;'>#{i+1} - {c['rarity']}</div>
-<img src='{c['image_url']}' style='width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<img src='{c['image_url']}' style='width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background-color: #000;' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
 <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['common_name']}</div>
 <div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['latin_name']}</div>
 <div style='font-size: 8px; background: rgba(0,0,0,0.25); padding: 3px; border-radius: 4px; margin-top: 4px; text-align: left; line-height: 1.2;'>

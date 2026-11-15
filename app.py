@@ -254,17 +254,17 @@ elif st.session_state.page == "pack_opening":
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
 
-    # === BLOCCO 1: Logica per individuare se la carta è rara e preparare l'effetto ===
-    is_rare_card = r_key in ["RARE", "EXRA", "ULRA"]
+    # Identifica se la carta è rara (includendo eventuali varianti)
+    is_rare_card = r_key in ["RARE", "EXRA", "ULTRA"]
     extra_style = ""
     if is_rare_card:
-        extra_style = "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"
+      extra_style = "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"
 
     new_badge = ""
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-    # === BLOCCO 2: Iniezione dello stile CSS e la carta aggiornata con {extra_style} ===
+    # Iniezione stile CSS per l'animazione della cornice rara
     st.markdown("""
     <style>
     @keyframes pulseGlow {
@@ -288,19 +288,18 @@ elif st.session_state.page == "pack_opening":
 </div>
 </div>
 </div>"""
+    
+    # RENDERIZZIAMO LA CARTA UNA SOLA VOLTA QUI:
     st.markdown(card_html, unsafe_allow_html=True)
-    # Controlliamo se la carta è una nuova scoperta (is_new)
+
+    # Controllo se la carta è una nuova scoperta
     is_new_card = c.get("is_new", False)
 
-    # ... (tutto il resto del codice della carta) ...
-    st.markdown(card_html, unsafe_allow_html=True)
-
-    # Suona l'audio SOLO se la carta è una nuova scoperta!
+    # Suona l'audio se è nuova (aggiungiamo un parametro casuale "?t=" per forzare il browser a riprodurlo ogni volta)
     if is_new_card:
+      sound_url = f"https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3?t={random.randint(1000, 9999)}"
       st.markdown(
-          "<audio"
-          " src='https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3'"
-          " autoplay></audio>",
+          f"<audio src='{sound_url}' autoplay></audio>",
           unsafe_allow_html=True,
       )
 

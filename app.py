@@ -295,8 +295,14 @@ elif st.session_state.page == "pack_opening":
     # ... (tutto il resto del codice della carta) ...
     st.markdown(card_html, unsafe_allow_html=True)
     # === BLOCCO 3: Effetto sonoro automatico se la carta è rara ===
+    # Suona l'audio SOLO se la carta è una nuova scoperta!
     if is_new_card:
-        st.markdown("<audio src='https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3' autoplay></audio>", unsafe_allow_html=True)
+      st.markdown(
+          "<audio"
+          " src='https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3'"
+          " autoplay></audio>",
+          unsafe_allow_html=True,
+      )
 
     st.write("##")
     btn_label = (

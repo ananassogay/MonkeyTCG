@@ -69,7 +69,7 @@ slots_probs = [
         "EXRA": 10,
         "ULTRA": 1,
     },  # 4° carta
-    {"BLUNC": 10, "UNC": 25, "RARE": 15, "EXRA": 45, "ULTRA": 5},  # 5° carta
+    {"BLUNC": 5, "UNC": 15, "RARE": 20, "EXRA": 45, "ULTRA": 15},  # 5° carta
 ]
 
 
@@ -464,16 +464,40 @@ elif st.session_state.page == "album":
   st.markdown(
       f"""<div style='font-family: Arial; text-align: center;'>
 <h2>📖 Album & Pokedex iNaturalist</h2>
-<p style='color: #666;'>Specie sbloccate: <b>{found_count}</b> su <b>{total_species}</b> totali ({percentage}% completato)<br>
-<i>💡 Clicca sul pulsante delle copie di qualsiasi carta per aprire il sotto-album dedicato!</i></p>
+<p style='color: #666;'>Specie sbloccate: <b>{found_count}</b> su <b>{total_species}</b> totali ({percentage}% completato)</p>
 </div>""",
       unsafe_allow_html=True,
   )
+
+  # --- SEZIONE FILTRI PER RARITÀ E GENERE ---
+  st.write("---")
+  st.markdown("### 🔍 Filtri Album")
+  
+  # Estraiamo dinamicamente le rarità e i generi disponibili dal database
+  all_rarities = sorted(list(set(sp.get("Rarità", "COM").upper() for sp in species_data)))
+  
+  # Il genere è la prima parola del nome latino (es. "Macaca mulatta" -> "Macaca")
+  all_genera = sorted(list(set(sp.get("Nome Latino", "").strip().split()[0] for sp in species_data if sp.get("Nome Latino"))))
+
+  col_f1, col_f2 = st.columns(2)
+  with col_f1:
+    filter_rarity = st.selectbox("Filtra per Rarità:", ["Tutte"] + all_rarities)
+  with col_f2:
+    filter_genus = st.selectbox("Filtra per Genere:", ["Tutti"] + all_genera)
+
+  # Applichiamo i filtri alla lista delle specie
+  filtered_species = species_data
+  if filter_rarity != "Tutte":
+    filtered_species = [sp for sp in filtered_species if sp.get("Rarità", "").upper() == filter_rarity]
+  if filter_genus != "Tutti":
+    filtered_species = [sp for sp in filtered_species if sp.get("Nome Latino", "").strip().startswith(filter_genus)]
+
+  st.markdown(f"<p style='font-size: 13px; color: #555; text-align: center;'>Visualizzando <b>{len(filtered_species)}</b> specie in base ai filtri selezionati.</p>", unsafe_allow_html=True)
   st.write("---")
 
-  # GRIGLIA RIGA PER RIGA: raggruppiamo le specie in gruppi da 4 per mantenere l'ordine corretto da sinistra a destra
-  for i in range(0, len(species_data), 4):
-    row_species = species_data[i : i + 4]
+  # GRIGLIA RIGA PER RIGA: usiamo filtered_species per mantenere l'ordine e applicare i filtri
+  for i in range(0, len(filtered_species), 4):
+    row_species = filtered_species[i : i + 4]
     cols = st.columns(4)
 
     for col_idx, sp in enumerate(row_species):

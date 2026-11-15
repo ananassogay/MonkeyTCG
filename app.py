@@ -299,7 +299,7 @@ elif st.session_state.page == "pack_opening":
     if is_new_card:
       st.markdown(
           "<audio"
-          " src='https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3'"
+          " src='https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3'"
           " autoplay></audio>",
           unsafe_allow_html=True,
       )

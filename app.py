@@ -347,7 +347,7 @@ elif st.session_state.page == "pack_opening":
     st.markdown(html_summary, unsafe_allow_html=True)
     st.write("---")
 
-col_a, col_b = st.columns(2)
+    col_a, col_b = st.columns(2)
     with col_a:
       if st.button(
           "Torna al Menu 🏠", use_container_width=True, key="menu_summary"

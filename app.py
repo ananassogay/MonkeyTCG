@@ -503,9 +503,9 @@ elif st.session_state.page == "album":
           st.session_state.selected_species = safe_name
           st.session_state.page = "species_detail"
           st.rerun()
-      else:
+    else:
         st.markdown(
-            """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
+            """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
 <div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>
 <div style='width: 100%; height: 75px; background: #2c3e50; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px;'>❓</div>
 <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
@@ -513,11 +513,11 @@ elif st.session_state.page == "album":
 </div>""",
             unsafe_allow_html=True,
         )
-      st.write("")
 
-  st.write("---")
-  if st.button(
-      "Torna al Menu 🏠", use_container_width=True, key="menu_album_bottom"
-  ):
-    st.session_state.page = "menu"
-    st.rerun()
+        # Mettiamo un pulsante disattivato o un blocco vuoto esteticamente identico allo spazio del tasto copie
+        st.markdown(
+            """<div style='background: rgba(0,0,0,0.1); border: 2px dashed #7f8c8d; border-top: none; border-radius: 0 0 10px 10px; padding: 10px 6px; text-align: center; font-size: 11px; color: #7f8c8d; font-family: Arial; font-weight: bold;'>
+🔒 x0 copie
+</div>""",
+            unsafe_allow_html=True,
+        )

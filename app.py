@@ -275,7 +275,7 @@ elif st.session_state.page == "pack_opening":
 </div>"""
     st.markdown(card_html, unsafe_allow_html=True)
 
-st.write("##")
+    st.write("##")
     btn_label = (
         "✨ Mostra il riepilogo del pacchetto"
         if idx == len(pack) - 1

@@ -282,7 +282,7 @@ if idx < len(pack):
         if idx == len(pack) - 1
         else "Prossima Carta ➡️"
     )
-    if st.button(btn_label, use_container_width=True, type="primary"):
+if st.button(btn_label, use_container_width=True, type="primary"):
       st.session_state.current_card_index += 1
       st.rerun()
 

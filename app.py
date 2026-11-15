@@ -175,7 +175,7 @@ if "selected_species" not in st.session_state:
 # A. MENU PRINCIPALE
 if st.session_state.page == "menu":
   st.markdown(
-      "<div style='text-align: center; padding: 30px; background: #f8f9fa;"
+      "<div style='text-align: center; padding: 30px; background: #427a4d;"
       " border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>"
       "<h2>🐾 iNaturalist TCG - Menu Principale</h2><p style='color: #6c757d;"
       " margin-bottom: 20px;'>Apri le bustine e colleziona tutte le specie"
@@ -291,7 +291,7 @@ elif st.session_state.page == "pack_opening":
     st.markdown(card_html, unsafe_allow_html=True)
 
     # === BLOCCO 3: Effetto sonoro automatico se la carta è rara ===
-    if is_rare_card:
+    if is_new:
         st.markdown("<audio src='https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3' autoplay></audio>", unsafe_allow_html=True)
 
     st.write("##")

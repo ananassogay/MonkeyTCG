@@ -261,13 +261,14 @@ elif st.session_state.page == "pack_opening":
     img_url_fresh = c['image_url'] + ("&" if "?" in c['image_url'] else "?") + "t=" + str(random.randint(1000, 9999))
 
     # 2. Render della carta in un unico blocco HTML solido e centrato al 100%
-    card_html = f"""<div style='text-align: center; font-family: Arial;'>
+card_html = f"""<div style='text-align: center; font-family: Arial;'>
 <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
 {new_badge}
 <div style='background-color: {theme['bg']}; border: 4px solid {theme['border']}; border-radius: 16px; width: 280px; padding: 14px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: 0 auto; color: {theme['text']};'>
 <div style='font-size: 11px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase;'>RARITÀ: {c['rarity']}</div>
-<div style='background: #000; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto;'>
-<img src='{img_url_fresh}' style='width: 100%; height: 190px; object-fit: cover; display: block;' onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
+<div style='background: #111; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); width: 252px; height: 190px; margin: 0 auto; display: flex; align-items: center; justify-content: center; position: relative;'>
+<span style='position: absolute; color: #7f8c8d; font-size: 12px; font-weight: bold;'>Caricamento... ⏳</span>
+<img src='{c['image_url']}' style='width: 100%; height: 190px; object-fit: cover; display: block; position: relative; z-index: 2; opacity: 0; transition: opacity 0.2s ease-in;' onload='this.style.opacity=1; this.previousElementSibling.style.display="none";' onerror="this.src='https://via.placeholder.com/250?text=No+Image'; this.style.opacity=1;">
 </div>
 <div style='font-weight: bold; font-size: 15px; margin-top: 10px;'>{c['common_name']}</div>
 <div style='font-style: italic; font-size: 11px; opacity: 0.85; margin-top: 2px;'>{c['latin_name']}</div>

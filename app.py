@@ -598,6 +598,7 @@ elif st.session_state.page == "album":
               "cover_index": safe_cover_idx,
               "sample_card": copies[safe_cover_idx],
           }
+          
         except:
           pass
 

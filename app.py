@@ -597,10 +597,10 @@ elif st.session_state.page == "album":
               "copies": copies,
               "cover_index": safe_cover_idx,
               "sample_card": copies[safe_cover_idx],
-          }
-          
-  except:
-    pass
+            }
+        except:
+          # L'except intercetta l'errore e va a capo senza bloccare l'app
+          pass
 
   total_species = len(species_data)
   found_count = len(unlocked_species)

@@ -177,11 +177,28 @@ def draw_card(slot_index):
   user_login = "Anonimo"
   obs_id = ""
 
+  # --- LOGICA DI ABBINAMENTO FLESSIBILE PER NOME LATINO / COMUNE ---
   matched_obs = None
-  if latin_name.lower() in species_data_txt:
-    matched_obs = random.choice(species_data_txt[latin_name.lower()])
-  elif common_name.lower() in species_data_txt:
-    matched_obs = random.choice(species_data_txt[common_name.lower()])
+  
+  # 1. Cerchiamo prima per corrispondenza parziale nel nome latino (es. cattura le sottospecie)
+  l_lower = latin_name.lower()
+  matching_obs_list = []
+  
+  for sci_key, obs_list in species_data_txt.items():
+    # Se il nome della specie è contenuto nella chiave del txt (o viceversa)
+    if l_key in sci_key or sci_key in l_key:
+      matching_obs_list.extend(obs_list)
+
+  # 2. Se non troviamo nulla col latino, proviamo col nome comune
+  if not matching_obs_list and common_name and common_name != "nan":
+    c_lower = common_name.lower()
+    for com_key, obs_list in species_data_txt.items():
+      if c_lower in com_key or com_key in c_lower:
+        matching_obs_list.extend(obs_list)
+
+  # 3. Se abbiamo trovato delle osservazioni compatibili, ne peschiamo una a caso
+  if matching_obs_list:
+    matched_obs = random.choice(matching_obs_list)
 
   if matched_obs:
     image_url = matched_obs["image_url"]

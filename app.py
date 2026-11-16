@@ -599,8 +599,8 @@ elif st.session_state.page == "album":
               "sample_card": copies[safe_cover_idx],
           }
           
-except:
-          pass
+  except:
+    pass
 
   total_species = len(species_data)
   found_count = len(unlocked_species)

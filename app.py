@@ -651,10 +651,11 @@ elif st.session_state.page == "album":
     l_name = sp.get("Nome Latino", "Sconosciuto")
     safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
 
-    if safe_name in unlocked_species:
-      copies_list = unlocked_species[safe_name]
-      cnt = len(copies_list)
-      sample_card = copies_list[0]
+        if safe_name in unlocked_species:
+          item_data = unlocked_species[safe_name]
+          copies_list = item_data["copies"]
+          cnt = len(copies_list)
+          sample_card = item_data["sample_card"]  # Usa correttamente la copertina scelta!
       r_key = sample_card["rarity"].upper()
       theme = rarity_theme.get(
           r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}

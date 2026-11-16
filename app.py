@@ -115,7 +115,7 @@ slots_probs = [
         "EXRA": 10,
         "ULTRA": 1,
     },  # 4° carta
-    {"BLUNC": 5, "UNC": 15, "RARE": 20, "EXRA": 45, "ULTRA": 15},  # 5° carta
+    {"BLUNC": 5, "UNC": 15, "RARE": 27, "EXRA": 45, "ULTRA": 8},  # 5° carta
 ]
 
 

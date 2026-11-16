@@ -586,17 +586,18 @@ elif st.session_state.page == "album":
     for filename in os.listdir(ALBUM_DIR):
       if filename.endswith(".json"):
         file_path = os.path.join(ALBUM_DIR, filename)
-        # Usiamo la nuova funzione per estrarre copie e copertina corretta
-        copies, cover_index = load_species_copies(file_path)
-        if copies:
-          safe_name = filename.replace(".json", "")
-          safe_cover_idx = (
-              cover_index if 0 <= cover_index < len(copies) else 0
-          )
-          unlocked_species[safe_name] = {
-              "copies": copies,
-              "cover_index": safe_cover_idx,
-              "sample_card": copies[safe_cover_idx],
+        try:
+          # Il try racchiude il codice che potrebbe generare un errore
+          copies, cover_index = load_species_copies(file_path)
+          if copies:
+            safe_name = filename.replace(".json", "")
+            safe_cover_idx = (
+                cover_index if 0 <= cover_index < len(copies) else 0
+            )
+            unlocked_species[safe_name] = {
+                "copies": copies,
+                "cover_index": safe_cover_idx,
+                "sample_card": copies[safe_cover_idx],
             }
         except:
           # L'except intercetta l'errore e va a capo senza bloccare l'app

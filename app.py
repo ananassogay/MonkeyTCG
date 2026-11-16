@@ -49,6 +49,13 @@ if not st.session_state.player_name:
 
 current_user = st.session_state.player_name
 
+# Controlliamo se è stata selezionata una specie dall'album HTML
+if "species" in st.query_params:
+  st.session_state.selected_species = st.query_params["species"]
+  st.session_state.page = "species_detail"
+  # Puliamo il parametro dall'URL per non rimanere bloccati
+  del st.query_params["species"]
+
 # Cartella dell'album unica per il giocatore
 ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
 if not os.path.exists(ALBUM_DIR):
@@ -570,57 +577,52 @@ elif st.session_state.page == "album":
   st.markdown(f"<p style='font-size: 13px; color: #555; text-align: center;'>Visualizzando <b>{len(filtered_species)}</b> specie in base ai filtri selezionati.</p>", unsafe_allow_html=True)
   st.write("---")
 
-  # GRIGLIA RIGA PER RIGA: usiamo filtered_species per mantenere l'ordine e applicare i filtri
-  for i in range(0, len(filtered_species), 4):
-    row_species = filtered_species[i : i + 4]
-    cols = st.columns(4)
+# --- GRIGLIA FLUIDA STILE RIEPILOGO PACCHETTO ---
+  html_album_grid = "<div style='font-family: Arial; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 10px;'>"
 
-    for col_idx, sp in enumerate(row_species):
-      c_name = sp.get("Nome Comune", "Sconosciuto")
-      l_name = sp.get("Nome Latino", "Sconosciuto")
-      safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
+  for sp in filtered_species:
+    c_name = sp.get("Nome Comune", "Sconosciuto")
+    l_name = sp.get("Nome Latino", "Sconosciuto")
+    safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
 
-      with cols[col_idx]:
-        if safe_name in unlocked_species:
-          copies_list = unlocked_species[safe_name]
-          cnt = len(copies_list)
-          sample_card = copies_list[0]
-          r_key = sample_card["rarity"].upper()
-          theme = rarity_theme.get(
-              r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
-          )
+    if safe_name in unlocked_species:
+      copies_list = unlocked_species[safe_name]
+      cnt = len(copies_list)
+      sample_card = copies_list[0]
+      r_key = sample_card["rarity"].upper()
+      theme = rarity_theme.get(
+          r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
+      )
 
-          st.markdown(
-              f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
-<img src='{sample_card['image_url']}' style='width: 100%; height: 110px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-<div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
-<div style='font-size: 8px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{l_name}</div>
-</div>""",
-              unsafe_allow_html=True,
-          )
+      # Pulsante per aprire il sotto-album dedicato
+      inat_url = f"?user={current_user}"  # Mantiene lo stato dell'utente
 
-          if st.button(
-              f"x{cnt} copie", key=f"btn_{safe_name}", use_container_width=True
-          ):
-            st.session_state.selected_species = safe_name
-            st.session_state.page = "species_detail"
-            st.rerun()
-        else:
-          st.markdown(
-              """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; opacity: 0.5; color: #bdc3c7; font-family: Arial;'>
-<div style='font-size: 8px; font-weight: bold; margin-bottom: 3px;'>MANCANTE</div>
-<div style='width: 100%; height: 75px; background: #2c3e50; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 20px;'>❓</div>
-<div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
-<div style='font-size: 8px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
-</div>""",
-              unsafe_allow_html=True,
-          )
-          st.markdown(
-              """<div style='background: rgba(0,0,0,0.1); border: 2px dashed #7f8c8d; border-top: none; border-radius: 0 0 10px 10px; padding: 10px 6px; text-align: center; font-size: 11px; color: #7f8c8d; font-family: Arial; font-weight: bold;'>
-🔒 x0 copie
-</div>""",
-              unsafe_allow_html=True,
-          )
+      html_album_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
+<div>
+    <div style='font-size: 10px; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;'>{r_key}</div>
+    <div style='background-color: #000; background-image: url("{sample_card['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 110px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);'></div>
+    <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
+    <div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic;'>{l_name}</div>
+</div>
+<div style='margin-top: 8px;'>
+    <a href='?user={current_user}&species={safe_name}' target='_self' style='display: block; background: rgba(0,0,0,0.3); color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 11px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2);'>x{cnt} copie 📖</a>
+</div>
+</div>"""
+    else:
+      html_album_grid += """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 12px; width: 155px; padding: 8px; text-align: center; opacity: 0.5; color: #bdc3c7; display: flex; flex-direction: column; justify-content: space-between;'>
+<div>
+    <div style='font-size: 9px; font-weight: bold; margin-bottom: 4px;'>MANCANTE</div>
+    <div style='width: 100%; height: 110px; background: #2c3e50; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px;'>❓</div>
+    <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
+    <div style='font-size: 9px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
+</div>
+<div style='margin-top: 8px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 6px; font-size: 11px; font-weight: bold; color: #7f8c8d;'>
+    🔒 x0 copie
+</div>
+</div>"""
+
+  html_album_grid += "</div>"
+  st.markdown(html_album_grid, unsafe_allow_html=True)
         st.write("")
 
 # --- PANNELLO BACKUP & RIPRISTINO ALBUM ---

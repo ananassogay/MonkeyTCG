@@ -123,13 +123,13 @@ def save_card_to_album_folder(card):
   )
   file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
-  # Carichiamo copie e cover_index attuale preservandoli
+  # Carichiamo la lista delle copie e la copertina attuale usando le nuove funzioni
   copies, cover_index = load_species_copies(file_path)
 
-  # Aggiungiamo la nuova copia in fondo (mantenendo l'ordine cronologico)
+  # Aggiungiamo la nuova carta in fondo alla lista (mantenendo l'ordine cronologico)
   copies.append(card)
 
-  # Salviamo mantenendo il cover_index esistente
+  # Salviamo tutto mantenendo l'indice di copertina invariato
   save_species_copies(file_path, copies, cover_index)
 
   existing_copies = []

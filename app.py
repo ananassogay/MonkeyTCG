@@ -13,19 +13,44 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_FILE = os.path.join(BASE_DIR, "scimmie.json")
 TXT_FILE = os.path.join(BASE_DIR, "osservazioni.txt")
 
-# Gestione dell'utente basata sui query parameters dell'URL (es. ?user=12345)
-query_params = st.query_params
-if "user" not in query_params:
-    # Se l'utente non ha un ID nell'URL, ne generiamo uno casuale e ricarichiamo la pagina con quell'ID
-    random_user_id = f"player_{random.randint(10000, 99999)}"
-    st.query_params["user"] = random_user_id
-    st.rerun()
+# --- 1.5 SCHERMATA LOGIN / NOME UTENTE ---
+if "player_name" not in st.session_state:
+  if "user" in st.query_params:
+    st.session_state.player_name = st.query_params["user"]
+  else:
+    st.session_state.player_name = None
 
-current_user = query_params["user"]
+# Se l'utente non è ancora inserito, mostriamo solo la schermata di benvenuto
+if not st.session_state.player_name:
+  st.markdown(
+      """<div style='text-align: center; padding: 40px 20px; background: #427a4d; border-radius: 15px; color: white; font-family: Arial; margin-bottom: 20px;'>
+<h2>🐾 Benvenuto in iNaturalist TCG!</h2>
+<p style='font-size: 14px; margin-top: 10px;'>Inserisci il tuo nome per iniziare la collezione o ricaricare i tuoi progressi salvati.</p>
+</div>""",
+      unsafe_allow_html=True,
+  )
 
-# Ogni utente avrà la sua cartella album dedicata!
+  col1, col2, col3 = st.columns([1, 2, 1])
+  with col2:
+    username_input = st.text_input(
+        "Il tuo Nome o Nickname:", placeholder="es. marco"
+    )
+    if st.button("Entra nel Gioco 🚀", use_container_width=True, type="primary"):
+      if username_input.strip():
+        clean_name = (
+            username_input.strip().lower().replace(" ", "_").replace("/", "_")
+        )
+        st.session_state.player_name = clean_name
+        st.query_params["user"] = clean_name
+        st.rerun()
+      else:
+        st.error("Per favore, inserisci un nome valido!")
+  st.stop()  # Ferma la pagina qui finché non viene digitato il nome
+
+current_user = st.session_state.player_name
+
+# Cartella dell'album unica per il giocatore
 ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
-
 if not os.path.exists(ALBUM_DIR):
   os.makedirs(ALBUM_DIR)
 
@@ -284,6 +309,13 @@ if st.session_state.page == "menu":
       st.session_state.page = "album"
       st.rerun()
 
+  st.write("---")
+  # Pulsante per disconnettersi o cambiare profilo
+  if st.button("🔄 Cambia Profilo / Esci", use_container_width=True):
+    st.session_state.player_name = None
+    st.query_params.clear()
+    st.rerun()
+
 # B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
 # B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
 elif st.session_state.page == "pack_opening":
@@ -506,7 +538,7 @@ elif st.session_state.page == "album":
 
   st.markdown(
       f"""<div style='font-family: Arial; text-align: center;'>
-<h2>📖 Album & Pokedex iNaturalist</h2>
+<h2>📖 Album di {current_user.capitalize()}</h2>
 <p style='color: #666;'>Specie sbloccate: <b>{found_count}</b> su <b>{total_species}</b> totali ({percentage}% completato)</p>
 </div>""",
       unsafe_allow_html=True,

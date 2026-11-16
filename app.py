@@ -186,7 +186,7 @@ def draw_card(slot_index):
   
   for sci_key, obs_list in species_data_txt.items():
     # Se il nome della specie è contenuto nella chiave del txt (o viceversa)
-    if l_key in sci_key or sci_key in l_key:
+    if l_lower in sci_key or sci_key in l_key:
       matching_obs_list.extend(obs_list)
 
   # 2. Se non troviamo nulla col latino, proviamo col nome comune

@@ -53,13 +53,13 @@ current_user = st.session_state.player_name
 if "species" in st.query_params:
   st.session_state.selected_species = st.query_params["species"]
   st.session_state.page = "species_detail"
-  # Puliamo il parametro dall'URL per non rimanere bloccati
   del st.query_params["species"]
 
 # Cartella dell'album unica per il giocatore
 ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
 if not os.path.exists(ALBUM_DIR):
   os.makedirs(ALBUM_DIR)
+
 
 # --- 2. CARICAMENTO DATI ---
 @st.cache_data
@@ -85,7 +85,9 @@ def load_game_data():
 
           observation_info = {
               "image_url": image_url,
-              "place_guess": place_guess if place_guess else "Luogo sconosciuto",
+              "place_guess": (
+                  place_guess if place_guess else "Luogo sconosciuto"
+              ),
               "user_login": user_login if user_login else "Anonimo",
               "obs_id": obs_id,
           }
@@ -100,7 +102,7 @@ def load_game_data():
 
 species_data, species_data_txt = load_game_data()
 
-# --- 3. REGOLE DELLE PROBABILITÀ PER LE 5 CARTE ---
+# --- 3. REGOLE DELLE PROBABILITÀ E GESTIONE ALBUM ---
 slots_probs = [
     {"EXCO": 25, "COM": 75},  # 1° carta
     {"EXCO": 14, "COM": 75, "BLUNC": 11},  # 2° carta
@@ -117,33 +119,38 @@ slots_probs = [
 ]
 
 
+def load_species_copies(file_path):
+  """Legge il file JSON della specie supportando sia il vecchio formato (lista) sia il nuovo (dizionario con cover_index)."""
+  if not os.path.exists(file_path):
+    return [], 0
+  try:
+    with open(file_path, "r", encoding="utf-8") as f:
+      data = json.load(f)
+      if isinstance(data, list):
+        return data, 0
+      elif isinstance(data, dict):
+        return data.get("copies", []), data.get("cover_index", 0)
+  except:
+    pass
+  return [], 0
+
+
+def save_species_copies(file_path, copies, cover_index=0):
+  """Salva i dati della specie mantenendo l'ordine dei doppioni e l'indice della copertina scelta."""
+  data = {"cover_index": cover_index, "copies": copies}
+  with open(file_path, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=4)
+
+
 def save_card_to_album_folder(card):
   safe_name = (
       card["common_name"].replace("/", "_").replace(" ", "_").lower()
   )
   file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
-  # Carichiamo la lista delle copie e la copertina attuale usando le nuove funzioni
   copies, cover_index = load_species_copies(file_path)
-
-  # Aggiungiamo la nuova carta in fondo alla lista (mantenendo l'ordine cronologico)
   copies.append(card)
-
-  # Salviamo tutto mantenendo l'indice di copertina invariato
   save_species_copies(file_path, copies, cover_index)
-
-  existing_copies = []
-  if os.path.exists(file_path):
-    try:
-      with open(file_path, "r", encoding="utf-8") as f:
-        existing_copies = json.load(f)
-    except:
-      existing_copies = []
-
-  existing_copies.append(card)
-
-  with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(existing_copies, f, ensure_ascii=False, indent=4)
 
 
 def draw_card(slot_index):
@@ -201,60 +208,38 @@ def draw_card(slot_index):
   save_card_to_album_folder(card_data)
   return card_data
 
+
 def export_user_album_to_json():
-  """Raccoglie tutte le carte salvate nella cartella dell'utente e crea un unico dizionario JSON per l'export."""
+  """Raccoglie tutte le carte salvate nella cartella dell'utente per l'export."""
   all_cards_data = {}
   if os.path.exists(ALBUM_DIR):
     for filename in os.listdir(ALBUM_DIR):
       if filename.endswith(".json"):
         file_path = os.path.join(ALBUM_DIR, filename)
-        try:
-          with open(file_path, "r", encoding="utf-8") as f:
-            copies = json.load(f)
-            if copies:
-              all_cards_data[filename] = copies
-        except:
-          pass
+        copies, cover_index = load_species_copies(file_path)
+        if copies:
+          all_cards_data[filename] = {"copies": copies, "cover_index": cover_index}
   return json.dumps(all_cards_data, ensure_ascii=False, indent=4)
 
 
 def import_user_album_from_json(uploaded_file):
-  """Legge un file JSON caricato dall'utente e ripristina la sua collezione di carte."""
-def load_species_copies(file_path):
-  """Legge il file JSON della specie supportando sia il vecchio formato (lista) sia il nuovo (dizionario con cover_index)."""
-  if not os.path.exists(file_path):
-    return [], 0
-  try:
-    with open(file_path, "r", encoding="utf-8") as f:
-      data = json.load(f)
-      if isinstance(data, list):
-        # Retrocompatibilità: se il file è una lista vecchia, restituiamo la lista e cover 0
-        return data, 0
-      elif isinstance(data, dict):
-        return data.get("copies", []), data.get("cover_index", 0)
-  except:
-    pass
-  return [], 0
-
-
-def save_species_copies(file_path, copies, cover_index=0):
-  """Salva i dati della specie mantenendo l'ordine dei doppioni e l'indice della copertina scelta."""
-  data = {"cover_index": cover_index, "copies": copies}
-  with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
-    
+  """Legge un file JSON di backup e ripristina la collezione."""
   try:
     content = json.load(uploaded_file)
     if not os.path.exists(ALBUM_DIR):
       os.makedirs(ALBUM_DIR)
 
-    for filename, copies in content.items():
+    for filename, data in content.items():
       file_path = os.path.join(ALBUM_DIR, filename)
-      with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(copies, f, ensure_ascii=False, indent=4)
+      if isinstance(data, list):
+        # Retrocompatibilità per vecchi backup in formato lista
+        save_species_copies(file_path, data, 0)
+      elif isinstance(data, dict):
+        save_species_copies(file_path, data.get("copies", []), data.get("cover_index", 0))
     return True
-  except Exception as e:
+  except Exception:
     return False
+
 
 # --- 4. CONFIGURAZIONE COLORI DI RARITÀ ---
 rarity_theme = {
@@ -282,11 +267,12 @@ if "selected_species" not in st.session_state:
 # A. MENU PRINCIPALE
 if st.session_state.page == "menu":
   st.markdown(
-      "<div style='text-align: center; padding: 30px; background: #427a4d;"
-      " border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>"
-      "<h2>🐾 iNaturalist TCG - Menu Principale</h2><p style='color: #ffffff;"
-      " margin-bottom: 20px;'>Apri le bustine e colleziona tutte le specie"
-      " nell'album!</p></div>",
+      f"<div style='text-align: center; padding: 25px; background: #427a4d;"
+      f" border-radius: 12px; border: 1px solid #dee2e6; font-family: Arial;'>"
+      f"<h2>🐾 iNaturalist TCG</h2><p style='color: #ffd700; font-weight: bold;"
+      f" margin: 5px 0;'>Giocatore: {current_user.capitalize()}</p><p"
+      " style='color: #ffffff; margin-bottom: 0;'>Apri le bustine e colleziona"
+      " tutte le specie nell'album!</p></div>",
       unsafe_allow_html=True,
   )
 
@@ -336,7 +322,9 @@ if st.session_state.page == "menu":
               unsafe_allow_html=True,
           )
           time.sleep(1.5)
-          st.session_state.current_pack_cards = [draw_card(i) for i in range(5)]
+          st.session_state.current_pack_cards = [
+              draw_card(i) for i in range(5)
+          ]
           st.session_state.current_card_index = 0
           st.session_state.page = "pack_opening"
           st.rerun()
@@ -349,13 +337,11 @@ if st.session_state.page == "menu":
       st.rerun()
 
   st.write("---")
-  # Pulsante per disconnettersi o cambiare profilo
   if st.button("🔄 Cambia Profilo / Esci", use_container_width=True):
     st.session_state.player_name = None
     st.query_params.clear()
     st.rerun()
 
-# B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
 # B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
 elif st.session_state.page == "pack_opening":
   pack = st.session_state.current_pack_cards
@@ -368,7 +354,6 @@ elif st.session_state.page == "pack_opening":
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
 
-    # Identifica se la carta è rara (includendo eventuali varianti)
     is_rare_card = r_key in ["RARE", "EXRA", "ULTRA"]
     extra_style = ""
     if is_rare_card:
@@ -378,7 +363,6 @@ elif st.session_state.page == "pack_opening":
     if c.get("is_new", False):
       new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
 
-    # Iniezione stile CSS per l'animazione della cornice rara
     st.markdown("""
     <style>
     @keyframes pulseGlow {
@@ -402,14 +386,10 @@ elif st.session_state.page == "pack_opening":
 </div>
 </div>
 </div>"""
-    
-    # RENDERIZZIAMO LA CARTA UNA SOLA VOLTA QUI:
     st.markdown(card_html, unsafe_allow_html=True)
 
-    # Controllo se la carta è una nuova scoperta
     is_new_card = c.get("is_new", False)
 
-    # Suona l'audio se è nuova (aggiungiamo un parametro casuale "?t=" per forzare il browser a riprodurlo ogni volta)
     if is_new_card:
       sound_url = f"https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3?t={random.randint(1000, 9999)}"
       st.markdown(
@@ -475,20 +455,19 @@ elif st.session_state.page == "pack_opening":
         st.session_state.page = "album"
         st.rerun()
 
-# C. SOTTO-ALBUM SPECIFICO DELLA SPECIE (DOPPIONI)
+# C. SOTTO-ALBUM SPECIFICO DELLA SPECIE (DOPPIONI & COPERTINA)
 elif st.session_state.page == "species_detail":
   safe_name = st.session_state.selected_species
   file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
   copies, cover_index = load_species_copies(file_path)
 
-  # GESTIONE CAMBIO COPERTINA PULITO
+  # GESTIONE CAMBIO COPERTINA
   cover_idx_to_set = st.query_params.get("set_cover", None)
   if cover_idx_to_set is not None:
     try:
       idx = int(cover_idx_to_set)
       if 0 <= idx < len(copies):
-        # Aggiorniamo solo l'indice della copertina, l'ordine dei doppioni resta intatto!
         save_species_copies(file_path, copies, cover_index=idx)
         del st.query_params["set_cover"]
         st.success("⭐ Copertina aggiornata con successo!")
@@ -528,7 +507,6 @@ elif st.session_state.page == "species_detail":
     )
     wiki_url = f"https://it.wikipedia.org/wiki/Special:Search?search={c['latin_name']}"
 
-    # Verifichiamo se questa specifica copia è la copertina attuale
     is_current_cover = idx == cover_index
     badge_text = (
         f"⭐ Copertina (Copia #{idx+1})"
@@ -587,7 +565,6 @@ elif st.session_state.page == "album":
       if filename.endswith(".json"):
         file_path = os.path.join(ALBUM_DIR, filename)
         try:
-          # Il try racchiude il codice che potrebbe generare un errore
           copies, cover_index = load_species_copies(file_path)
           if copies:
             safe_name = filename.replace(".json", "")
@@ -600,7 +577,6 @@ elif st.session_state.page == "album":
                 "sample_card": copies[safe_cover_idx],
             }
         except:
-          # L'except intercetta l'errore e va a capo senza bloccare l'app
           pass
 
   total_species = len(species_data)
@@ -620,12 +596,19 @@ elif st.session_state.page == "album":
   # --- SEZIONE FILTRI PER RARITÀ E GENERE ---
   st.write("---")
   st.markdown("### 🔍 Filtri Album")
-  
-  # Estraiamo dinamicamente le rarità e i generi disponibili dal database
-  all_rarities = sorted(list(set(sp.get("Rarità", "COM").upper() for sp in species_data)))
-  
-  # Il genere è la prima parola del nome latino (es. "Macaca mulatta" -> "Macaca")
-  all_genera = sorted(list(set(sp.get("Nome Latino", "").strip().split()[0] for sp in species_data if sp.get("Nome Latino"))))
+
+  all_rarities = sorted(
+      list(set(sp.get("Rarità", "COM").upper() for sp in species_data))
+  )
+  all_genera = sorted(
+      list(
+          set(
+              sp.get("Nome Latino", "").strip().split()[0]
+              for sp in species_data
+              if sp.get("Nome Latino")
+          )
+      )
+  )
 
   col_f1, col_f2 = st.columns(2)
   with col_f1:
@@ -633,17 +616,29 @@ elif st.session_state.page == "album":
   with col_f2:
     filter_genus = st.selectbox("Filtra per Genere:", ["Tutti"] + all_genera)
 
-  # Applichiamo i filtri alla lista delle specie
   filtered_species = species_data
   if filter_rarity != "Tutte":
-    filtered_species = [sp for sp in filtered_species if sp.get("Rarità", "").upper() == filter_rarity]
+    filtered_species = [
+        sp
+        for sp in filtered_species
+        if sp.get("Rarità", "").upper() == filter_rarity
+    ]
   if filter_genus != "Tutti":
-    filtered_species = [sp for sp in filtered_species if sp.get("Nome Latino", "").strip().startswith(filter_genus)]
+    filtered_species = [
+        sp
+        for sp in filtered_species
+        if sp.get("Nome Latino", "").strip().startswith(filter_genus)
+    ]
 
-  st.markdown(f"<p style='font-size: 13px; color: #555; text-align: center;'>Visualizzando <b>{len(filtered_species)}</b> specie in base ai filtri selezionati.</p>", unsafe_allow_html=True)
+  st.markdown(
+      f"<p style='font-size: 13px; color: #555; text-align: center;'>Visualizzando"
+      f" <b>{len(filtered_species)}</b> specie in base ai filtri"
+      " selezionati.</p>",
+      unsafe_allow_html=True,
+  )
   st.write("---")
 
-# --- GRIGLIA FLUIDA STILE RIEPILOGO PACCHETTO ---
+  # --- GRIGLIA FLUIDA STILE RIEPILOGO PACCHETTO ---
   html_album_grid = "<div style='font-family: Arial; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 10px;'>"
 
   for sp in filtered_species:
@@ -655,14 +650,11 @@ elif st.session_state.page == "album":
       item_data = unlocked_species[safe_name]
       copies_list = item_data["copies"]
       cnt = len(copies_list)
-      sample_card = item_data["sample_card"]  # Usa correttamente la copertina scelta!
+      sample_card = item_data["sample_card"]
       r_key = sample_card["rarity"].upper()
       theme = rarity_theme.get(
           r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
       )
-
-      # Pulsante per aprire il sotto-album dedicato
-      inat_url = f"?user={current_user}"  # Mantiene lo stato dell'utente
 
       html_album_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
 <div>
@@ -692,7 +684,7 @@ elif st.session_state.page == "album":
   st.markdown(html_album_grid, unsafe_allow_html=True)
   st.write("")
 
-# --- PANNELLO BACKUP & RIPRISTINO ALBUM ---
+  # --- PANNELLO BACKUP & RIPRISTINO ALBUM ---
   st.write("---")
   with st.expander("💾 Backup e Ripristino Collezione (Cambio Dispositivo)"):
     st.markdown(
@@ -704,7 +696,6 @@ elif st.session_state.page == "album":
 
     col_exp, col_imp = st.columns(2)
 
-    # 1. Tasto per il Download / Export
     with col_exp:
       json_data = export_user_album_to_json()
       st.download_button(
@@ -715,7 +706,6 @@ elif st.session_state.page == "album":
           use_container_width=True,
       )
 
-    # 2. Caricamento / Import
     with col_imp:
       uploaded_backup = st.file_uploader(
           "Carica backup (.json)", type=["json"], label_visibility="collapsed"

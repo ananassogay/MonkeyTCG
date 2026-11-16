@@ -623,7 +623,7 @@ elif st.session_state.page == "album":
 
   html_album_grid += "</div>"
   st.markdown(html_album_grid, unsafe_allow_html=True)
-        st.write("")
+st.write("")
 
 # --- PANNELLO BACKUP & RIPRISTINO ALBUM ---
   st.write("---")

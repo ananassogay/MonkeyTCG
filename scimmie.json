@@ -1,777 +1,792 @@
 [
-  {
-    "Nome Comune": "Golden-bellied Mangabey",
-    "Nome Latino": "Cercocebus chrysogaster",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Lesula",
-    "Nome Latino": "Cercopithecus lomamiensis",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Niger Delta Red Colobus",
-    "Nome Latino": "Piliocolobus epieni",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Osman Hill's grey-cheeked mangabey",
-    "Nome Latino": "Lophocebus osmani",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Preuss's Red Colobus",
-    "Nome Latino": "Piliocolobus preussi",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Sela Macaque",
-    "Nome Latino": "Macaca selai",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Siberut Macaque",
-    "Nome Latino": "Macaca siberu",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Tenasserim Lutung",
-    "Nome Latino": "Trachypithecus barbei",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Grey Snub-nosed Monkey",
-    "Nome Latino": "Rhinopithecus brelichi",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Lomami Red Colobus",
-    "Nome Latino": "Piliocolobus parmentieri",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Owl-faced Guenon",
-    "Nome Latino": "Cercopithecus hamlyni",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Dryas Monkey",
-    "Nome Latino": "Chlorocebus dryas",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Pagai Island Macaque",
-    "Nome Latino": "Macaca pagensis",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "White-cheeked Macaque",
-    "Nome Latino": "Macaca leucogenys",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Natuna Island Surili",
-    "Nome Latino": "Presbytis natunae",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Pennant's Red Colobus",
-    "Nome Latino": "Piliocolobus pennantii",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Tonkin Snub-nosed Monkey",
-    "Nome Latino": "Rhinopithecus avunculus",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "White-naped mangabey",
-    "Nome Latino": "Cercocebus lunulatus",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Kipunji",
-    "Nome Latino": "Rungwecebus kipunji",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Kutai Gray Langur",
-    "Nome Latino": "Presbytis canicrus",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Southern Patas Monkey",
-    "Nome Latino": "Erythrocebus baumstarki",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Blue Nile Patas Monkey",
-    "Nome Latino": "Erythrocebus poliophaeus",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Mentawai Surili",
-    "Nome Latino": "Presbytis potenziani",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Siberut Langur",
-    "Nome Latino": "Presbytis siberu",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Pig-tailed Langur",
-    "Nome Latino": "Simias concolor",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Southern Talapoin",
-    "Nome Latino": "Miopithecus talapoin",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Semliki Red Colobus",
-    "Nome Latino": "Piliocolobus semlikiensis",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Shortridge's Capped Lutung",
-    "Nome Latino": "Trachypithecus shortridgei",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Allen's Swamp Monkey",
-    "Nome Latino": "Allenopithecus nigroviridis",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "White-fronted Surili",
-    "Nome Latino": "Presbytis frontata",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Bouvier’s Red Colobus",
-    "Nome Latino": "Piliocolobus bouvieri",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Bornean Grey Langur",
-    "Nome Latino": "Presbytis hosei",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Sun-tailed Monkey",
-    "Nome Latino": "Allochrocebus solatus",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Burmese Snub-nosed Monkey",
-    "Nome Latino": "Rhinopithecus strykeri",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Muna-Buton macaque",
-    "Nome Latino": "Macaca brunnescens",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Thollon's Red Colobus",
-    "Nome Latino": "Piliocolobus tholloni",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Bicolored Banded Langur",
-    "Nome Latino": "Presbytis bicolor",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Oubangui Red Colobus",
-    "Nome Latino": "Piliocolobus oustaleti",
-    "Rarità": "ULTRA"
-  },
-  {
-    "Nome Comune": "Popa langur",
-    "Nome Latino": "Trachypithecus popa",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Wolf's Monkey",
-    "Nome Latino": "Cercopithecus wolfi",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Sanje Mangabey",
-    "Nome Latino": "Cercocebus sanjei",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Black Mangabey",
-    "Nome Latino": "Lophocebus aterrimus",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Olive Colobus",
-    "Nome Latino": "Procolobus verus",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Tana River Red Colobus",
-    "Nome Latino": "Piliocolobus rufomitratus",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Johnston's grey-cheeked mangabey",
-    "Nome Latino": "Lophocebus johnstoni",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Bale Mountains Monkey",
-    "Nome Latino": "Chlorocebus djamdjamensis",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "François' Lutung",
-    "Nome Latino": "Trachypithecus francoisi",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Tana River Crested Mangabey",
-    "Nome Latino": "Cercocebus galeritus",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Southern Mitered Langur",
-    "Nome Latino": "Presbytis mitrata",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Sarawak Surili",
-    "Nome Latino": "Presbytis chrysomelas",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Gorontalo Macaque",
-    "Nome Latino": "Macaca nigrescens",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Shan Langur",
-    "Nome Latino": "Trachypithecus melamera",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Sulawesi Booted Macaque",
-    "Nome Latino": "Macaca ochreata",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Dent’s Monkey",
-    "Nome Latino": "Cercopithecus denti",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Northern Talapoin",
-    "Nome Latino": "Miopithecus ogouensis",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Saban Grizzled Langur",
-    "Nome Latino": "Presbytis sabana",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Chamba Sacred Langur",
-    "Nome Latino": "Semnopithecus ajax",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Diana Monkey",
-    "Nome Latino": "Cercopithecus diana",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "King Colobus",
-    "Nome Latino": "Colobus polykomos",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "East Sumatran Banded Langur",
-    "Nome Latino": "Presbytis percura",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Laotian Lutung",
-    "Nome Latino": "Trachypithecus laotum",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Heck's Macaque",
-    "Nome Latino": "Macaca hecki",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Grey-shanked Douc Langur",
-    "Nome Latino": "Pygathrix cinerea",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Arunachal Macaque",
-    "Nome Latino": "Macaca munzala",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Black Colobus",
-    "Nome Latino": "Colobus satanas",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Black Sumatran Langur",
-    "Nome Latino": "Presbytis sumatrana",
-    "Rarità": "EXRA"
-  },
-  {
-    "Nome Comune": "Smoky Mangabey",
-    "Nome Latino": "Cercocebus atys",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Annamese langur",
-    "Nome Latino": "Trachypithecus margarita",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "West Javan Langur",
-    "Nome Latino": "Trachypithecus mauritius",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Tonkean Macaque",
-    "Nome Latino": "Macaca tonkeana",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Cat Ba Lutung",
-    "Nome Latino": "Trachypithecus poliocephalus",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Udzungwa Red Colobus",
-    "Nome Latino": "Piliocolobus gordonorum",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "White-thighed Colobus",
-    "Nome Latino": "Colobus vellerosus",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Crowned Monkey",
-    "Nome Latino": "Cercopithecus pogonias",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "White-throated Monkey",
-    "Nome Latino": "Cercopithecus erythrogaster",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Indochinese Gray Langur",
-    "Nome Latino": "Trachypithecus crepusculus",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Red-capped Mangabey",
-    "Nome Latino": "Cercocebus torquatus",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Campbell's Monkey",
-    "Nome Latino": "Cercopithecus campbelli",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Hatinh Lutung",
-    "Nome Latino": "Trachypithecus hatinhensis",
-    "Rarità": "RARE"
-  },
-  {
-    "Nome Comune": "Black Snub-nosed Monkey",
-    "Nome Latino": "Rhinopithecus bieti",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Lesser Spot-nosed Monkey",
-    "Nome Latino": "Cercopithecus petaurista",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "grey-mantled grey-cheeked mangabey",
-    "Nome Latino": "Lophocebus albigena",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Agile Mangabey",
-    "Nome Latino": "Cercocebus agilis",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "White-headed Lutung",
-    "Nome Latino": "Trachypithecus leucocephalus",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Kinda Baboon",
-    "Nome Latino": "Papio kindae",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Terai Sacred Langur",
-    "Nome Latino": "Semnopithecus hector",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Indochinese Lutung",
-    "Nome Latino": "Trachypithecus germaini",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Phayre's Leaf Monkey",
-    "Nome Latino": "Trachypithecus phayrei",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Mandrill",
-    "Nome Latino": "Mandrillus sphinx",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Golden Snub-nosed Monkey",
-    "Nome Latino": "Rhinopithecus roxellana",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Lowe's Monkey",
-    "Nome Latino": "Cercopithecus lowei",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "De Brazza's Monkey",
-    "Nome Latino": "Cercopithecus neglectus",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Javan Surili",
-    "Nome Latino": "Presbytis comata",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Moor Macaque",
-    "Nome Latino": "Macaca maura",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Sumatran Surili",
-    "Nome Latino": "Presbytis melalophos",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Robinson’s Banded Langur",
-    "Nome Latino": "Presbytis robinsoni",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Moustached Monkey",
-    "Nome Latino": "Cercopithecus cephus",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Putty-nosed Monkey",
-    "Nome Latino": "Cercopithecus nictitans",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Ugandan grey-cheeked mangabey",
-    "Nome Latino": "Lophocebus ugandae",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Gee's Golden Lutung",
-    "Nome Latino": "Trachypithecus geei",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Delacour's Lutung",
-    "Nome Latino": "Trachypithecus delacouri",
-    "Rarità": "UNC"
-  },
-  {
-    "Nome Comune": "Hamadryas Baboon",
-    "Nome Latino": "Papio hamadryas",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Gelada",
-    "Nome Latino": "Theropithecus gelada",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Guinea Baboon",
-    "Nome Latino": "Papio papio",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Western Red Colobus",
-    "Nome Latino": "Piliocolobus badius",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Grivet Monkey",
-    "Nome Latino": "Chlorocebus aethiops",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Ashy Red Colobus",
-    "Nome Latino": "Piliocolobus tephrosceles",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Banded Surili",
-    "Nome Latino": "Presbytis femoralis",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Mona Monkey",
-    "Nome Latino": "Cercopithecus mona",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Lion-tailed Macaque",
-    "Nome Latino": "Macaca silenus",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "L'Hoest's Monkey",
-    "Nome Latino": "Allochrocebus lhoesti",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Mount Kilimanjaro Guereza",
-    "Nome Latino": "Colobus caudatus",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Thomas’s Langur",
-    "Nome Latino": "Presbytis thomasi",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Angola Colobus",
-    "Nome Latino": "Colobus angolensis",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Selangor Silvered Langur",
-    "Nome Latino": "Trachypithecus selangorensis",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Stump-tailed Macaque",
-    "Nome Latino": "Macaca arctoides",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Black-shanked Douc Langur",
-    "Nome Latino": "Pygathrix nigripes",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Malbrouck",
-    "Nome Latino": "Chlorocebus cynosuros",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Capped Lutung",
-    "Nome Latino": "Trachypithecus pileatus",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Celebes Crested Macaque",
-    "Nome Latino": "Macaca nigra",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Nilgiri Langur",
-    "Nome Latino": "Semnopithecus johnii",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Assam Macaque",
-    "Nome Latino": "Macaca assamensis",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Zanzibar Red Colobus Monkey",
-    "Nome Latino": "Piliocolobus kirkii",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Red-tailed Monkey",
-    "Nome Latino": "Cercopithecus ascanius",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Tibetan Macaque",
-    "Nome Latino": "Macaca thibetana",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Red-shanked Douc Langur",
-    "Nome Latino": "Pygathrix nemaeus",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "Javan Lutung",
-    "Nome Latino": "Trachypithecus auratus",
-    "Rarità": "BLUNC"
-  },
-  {
-    "Nome Comune": "White-thighed Surili",
-    "Nome Latino": "Presbytis siamensis",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Maroon Leaf Monkey",
-    "Nome Latino": "Presbytis rubicunda",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Tantalus Monkey",
-    "Nome Latino": "Chlorocebus tantalus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Malabar Sacred Langur",
-    "Nome Latino": "Semnopithecus hypoleucos",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Purple-faced Langur",
-    "Nome Latino": "Semnopithecus vetulus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Patas Monkey",
-    "Nome Latino": "Erythrocebus patas",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Nepal Sacred Langur",
-    "Nome Latino": "Semnopithecus schistaceus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Yellow Baboon",
-    "Nome Latino": "Papio cynocephalus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Green Monkey",
-    "Nome Latino": "Chlorocebus sabaeus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Silvered Leaf Monkey",
-    "Nome Latino": "Trachypithecus cristatus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Mantled Guereza",
-    "Nome Latino": "Colobus guereza",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Northern Pig-tailed Macaque",
-    "Nome Latino": "Macaca leonina",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Tufted Gray Langur",
-    "Nome Latino": "Semnopithecus priam",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Southern Pig-tailed Macaque",
-    "Nome Latino": "Macaca nemestrina",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Japanese Macaque",
-    "Nome Latino": "Macaca fuscata",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Toque Macaque",
-    "Nome Latino": "Macaca sinica",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Barbary Macaque",
-    "Nome Latino": "Macaca sylvanus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Proboscis Monkey",
-    "Nome Latino": "Nasalis larvatus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Bengal Sacred Langur",
-    "Nome Latino": "Semnopithecus entellus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Bonnet Macaque",
-    "Nome Latino": "Macaca radiata",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Blue Monkey",
-    "Nome Latino": "Cercopithecus mitis",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Dusky Leaf Monkey",
-    "Nome Latino": "Trachypithecus obscurus",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Olive Baboon",
-    "Nome Latino": "Papio anubis",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Formosan Rock Macaque",
-    "Nome Latino": "Macaca cyclopis",
-    "Rarità": "COM"
-  },
-  {
-    "Nome Comune": "Rhesus Macaque",
-    "Nome Latino": "Macaca mulatta",
-    "Rarità": "EXCO"
-  },
-  {
-    "Nome Comune": "Chacma Baboon",
-    "Nome Latino": "Papio ursinus",
-    "Rarità": "EXCO"
-  },
-  {
-    "Nome Comune": "Vervet Monkey",
-    "Nome Latino": "Chlorocebus pygerythrus",
-    "Rarità": "EXCO"
-  },
-  {
-    "Nome Comune": "Long-tailed Macaque",
-    "Nome Latino": "Macaca fascicularis",
-    "Rarità": "EXCO"
-  }
+    {
+        "Nome Comune": "Allen's Swamp Monkey",
+        "Nome Latino": "Allenopithecus nigroviridis",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Preuss's Monkey",
+        "Nome Latino": "Allochrocebus preussi",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "L'Hoest's Monkey",
+        "Nome Latino": "Allochrocebus lhoesti",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Sun-tailed Monkey",
+        "Nome Latino": "Allochrocebus solatus",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Agile Mangabey",
+        "Nome Latino": "Cercocebus agilis",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Smoky Mangabey",
+        "Nome Latino": "Cercocebus atys",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Golden-bellied Mangabey",
+        "Nome Latino": "Cercocebus chrysogaster",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Tana River Crested Mangabey",
+        "Nome Latino": "Cercocebus galeritus",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "White-naped mangabey",
+        "Nome Latino": "Cercocebus lunulatus",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Sanje Mangabey",
+        "Nome Latino": "Cercocebus sanjei",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Red-capped Mangabey",
+        "Nome Latino": "Cercocebus torquatus",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Red-tailed Monkey",
+        "Nome Latino": "Cercopithecus ascanius",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Campbell's Monkey",
+        "Nome Latino": "Cercopithecus campbelli",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Moustached Monkey",
+        "Nome Latino": "Cercopithecus cephus",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Dent’s Monkey",
+        "Nome Latino": "Cercopithecus denti",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Diana Monkey",
+        "Nome Latino": "Cercopithecus diana",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "White-throated Monkey",
+        "Nome Latino": "Cercopithecus erythrogaster",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Red-eared Monkey",
+        "Nome Latino": "Cercopithecus erythrotis",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Owl-faced Guenon",
+        "Nome Latino": "Cercopithecus hamlyni",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Lesula",
+        "Nome Latino": "Cercopithecus lomamiensis",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Lowe's Monkey",
+        "Nome Latino": "Cercopithecus lowei",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Blue Monkey",
+        "Nome Latino": "Cercopithecus mitis",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Mona Monkey",
+        "Nome Latino": "Cercopithecus mona",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "De Brazza's Monkey",
+        "Nome Latino": "Cercopithecus neglectus",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Putty-nosed Monkey",
+        "Nome Latino": "Cercopithecus nictitans",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Lesser Spot-nosed Monkey",
+        "Nome Latino": "Cercopithecus petaurista",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Crowned Monkey",
+        "Nome Latino": "Cercopithecus pogonias",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Wolf's Monkey",
+        "Nome Latino": "Cercopithecus wolfi",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Grivet Monkey",
+        "Nome Latino": "Chlorocebus aethiops",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Malbrouck",
+        "Nome Latino": "Chlorocebus cynosuros",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Bale Mountains Monkey",
+        "Nome Latino": "Chlorocebus djamdjamensis",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Dryas Monkey",
+        "Nome Latino": "Chlorocebus dryas",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Vervet Monkey",
+        "Nome Latino": "Chlorocebus pygerythrus",
+        "Rarità": "EXCO"
+    },
+    {
+        "Nome Comune": "Green Monkey",
+        "Nome Latino": "Chlorocebus sabaeus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Tantalus Monkey",
+        "Nome Latino": "Chlorocebus tantalus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Angola Colobus",
+        "Nome Latino": "Colobus angolensis",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Mount Kilimanjaro Guereza",
+        "Nome Latino": "Colobus caudatus",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Mantled Guereza",
+        "Nome Latino": "Colobus guereza",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "King Colobus",
+        "Nome Latino": "Colobus polykomos",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Black Colobus",
+        "Nome Latino": "Colobus satanas",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "White-thighed Colobus",
+        "Nome Latino": "Colobus vellerosus",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Southern Patas Monkey",
+        "Nome Latino": "Erythrocebus baumstarki",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Patas Monkey",
+        "Nome Latino": "Erythrocebus patas",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Blue Nile Patas Monkey",
+        "Nome Latino": "Erythrocebus poliophaeus",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "grey-mantled grey-cheeked mangabey",
+        "Nome Latino": "Lophocebus albigena",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Black Mangabey",
+        "Nome Latino": "Lophocebus aterrimus",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Johnston's grey-cheeked mangabey",
+        "Nome Latino": "Lophocebus johnstoni",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Osman Hill's grey-cheeked mangabey",
+        "Nome Latino": "Lophocebus osmani",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Ugandan grey-cheeked mangabey",
+        "Nome Latino": "Lophocebus ugandae",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Stump-tailed Macaque",
+        "Nome Latino": "Macaca arctoides",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Assam Macaque",
+        "Nome Latino": "Macaca assamensis",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Muna-Buton macaque",
+        "Nome Latino": "Macaca brunnescens",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Formosan Rock Macaque",
+        "Nome Latino": "Macaca cyclopis",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Long-tailed Macaque",
+        "Nome Latino": "Macaca fascicularis",
+        "Rarità": "EXCO"
+    },
+    {
+        "Nome Comune": "Japanese Macaque",
+        "Nome Latino": "Macaca fuscata",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Heck's Macaque",
+        "Nome Latino": "Macaca hecki",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Northern Pig-tailed Macaque",
+        "Nome Latino": "Macaca leonina",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "White-cheeked Macaque",
+        "Nome Latino": "Macaca leucogenys",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Moor Macaque",
+        "Nome Latino": "Macaca maura",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Rhesus Macaque",
+        "Nome Latino": "Macaca mulatta",
+        "Rarità": "EXCO"
+    },
+    {
+        "Nome Comune": "Arunachal Macaque",
+        "Nome Latino": "Macaca munzala",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Southern Pig-tailed Macaque",
+        "Nome Latino": "Macaca nemestrina",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Celebes Crested Macaque",
+        "Nome Latino": "Macaca nigra",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Gorontalo Macaque",
+        "Nome Latino": "Macaca nigrescens",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Sulawesi Booted Macaque",
+        "Nome Latino": "Macaca ochreata",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Pagai Island Macaque",
+        "Nome Latino": "Macaca pagensis",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Bonnet Macaque",
+        "Nome Latino": "Macaca radiata",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Sela Macaque",
+        "Nome Latino": "Macaca selai",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Siberut Macaque",
+        "Nome Latino": "Macaca siberu",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Lion-tailed Macaque",
+        "Nome Latino": "Macaca silenus",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Toque Macaque",
+        "Nome Latino": "Macaca sinica",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Barbary Macaque",
+        "Nome Latino": "Macaca sylvanus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Tibetan Macaque",
+        "Nome Latino": "Macaca thibetana",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Tonkean Macaque",
+        "Nome Latino": "Macaca tonkeana",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Drill",
+        "Nome Latino": "Mandrillus leucophaeus",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Mandrill",
+        "Nome Latino": "Mandrillus sphinx",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Northern Talapoin",
+        "Nome Latino": "Miopithecus ogouensis",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Southern Talapoin",
+        "Nome Latino": "Miopithecus talapoin",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Proboscis Monkey",
+        "Nome Latino": "Nasalis larvatus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Olive Baboon",
+        "Nome Latino": "Papio anubis",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Yellow Baboon",
+        "Nome Latino": "Papio cynocephalus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Hamadryas Baboon",
+        "Nome Latino": "Papio hamadryas",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Kinda Baboon",
+        "Nome Latino": "Papio kindae",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Guinea Baboon",
+        "Nome Latino": "Papio papio",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Chacma Baboon",
+        "Nome Latino": "Papio ursinus",
+        "Rarità": "EXCO"
+    },
+    {
+        "Nome Comune": "Western Red Colobus",
+        "Nome Latino": "Piliocolobus badius",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Bouvier’s Red Colobus",
+        "Nome Latino": "Piliocolobus bouvieri",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Niger Delta Red Colobus",
+        "Nome Latino": "Piliocolobus epieni",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Udzungwa Red Colobus",
+        "Nome Latino": "Piliocolobus gordonorum",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Zanzibar Red Colobus Monkey",
+        "Nome Latino": "Piliocolobus kirkii",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Oubangui Red Colobus",
+        "Nome Latino": "Piliocolobus oustaleti",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Lomami Red Colobus",
+        "Nome Latino": "Piliocolobus parmentieri",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Pennant's Red Colobus",
+        "Nome Latino": "Piliocolobus pennantii",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Preuss's Red Colobus",
+        "Nome Latino": "Piliocolobus preussi",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Tana River Red Colobus",
+        "Nome Latino": "Piliocolobus rufomitratus",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Semliki Red Colobus",
+        "Nome Latino": "Piliocolobus semlikiensis",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Ashy Red Colobus",
+        "Nome Latino": "Piliocolobus tephrosceles",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Thollon's Red Colobus",
+        "Nome Latino": "Piliocolobus tholloni",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Bicolored Banded Langur",
+        "Nome Latino": "Presbytis bicolor",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Kutai Gray Langur",
+        "Nome Latino": "Presbytis canicrus",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Sarawak Surili",
+        "Nome Latino": "Presbytis chrysomelas",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Javan Surili",
+        "Nome Latino": "Presbytis comata",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Banded Surili",
+        "Nome Latino": "Presbytis femoralis",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "White-fronted Surili",
+        "Nome Latino": "Presbytis frontata",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Bornean Grey Langur",
+        "Nome Latino": "Presbytis hosei",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Sumatran Surili",
+        "Nome Latino": "Presbytis melalophos",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Southern Mitered Langur",
+        "Nome Latino": "Presbytis mitrata",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Natuna Island Surili",
+        "Nome Latino": "Presbytis natunae",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "East Sumatran Banded Langur",
+        "Nome Latino": "Presbytis percura",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Mentawai Surili",
+        "Nome Latino": "Presbytis potenziani",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Robinson’s Banded Langur",
+        "Nome Latino": "Presbytis robinsoni",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Maroon Leaf Monkey",
+        "Nome Latino": "Presbytis rubicunda",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Saban Grizzled Langur",
+        "Nome Latino": "Presbytis sabana",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "White-thighed Surili",
+        "Nome Latino": "Presbytis siamensis",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Siberut Langur",
+        "Nome Latino": "Presbytis siberu",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Black Sumatran Langur",
+        "Nome Latino": "Presbytis sumatrana",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Thomas’s Langur",
+        "Nome Latino": "Presbytis thomasi",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Olive Colobus",
+        "Nome Latino": "Procolobus verus",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Grey-shanked Douc Langur",
+        "Nome Latino": "Pygathrix cinerea",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Red-shanked Douc Langur",
+        "Nome Latino": "Pygathrix nemaeus",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Black-shanked Douc Langur",
+        "Nome Latino": "Pygathrix nigripes",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Tonkin Snub-nosed Monkey",
+        "Nome Latino": "Rhinopithecus avunculus",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Black Snub-nosed Monkey",
+        "Nome Latino": "Rhinopithecus bieti",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Grey Snub-nosed Monkey",
+        "Nome Latino": "Rhinopithecus brelichi",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Golden Snub-nosed Monkey",
+        "Nome Latino": "Rhinopithecus roxellana",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Burmese Snub-nosed Monkey",
+        "Nome Latino": "Rhinopithecus strykeri",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Kipunji",
+        "Nome Latino": "Rungwecebus kipunji",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Chamba Sacred Langur",
+        "Nome Latino": "Semnopithecus ajax",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Bengal Sacred Langur",
+        "Nome Latino": "Semnopithecus entellus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Terai Sacred Langur",
+        "Nome Latino": "Semnopithecus hector",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Malabar Sacred Langur",
+        "Nome Latino": "Semnopithecus hypoleucos",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Nilgiri Langur",
+        "Nome Latino": "Semnopithecus johnii",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Tufted Gray Langur",
+        "Nome Latino": "Semnopithecus priam",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Nepal Sacred Langur",
+        "Nome Latino": "Semnopithecus schistaceus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Purple-faced Langur",
+        "Nome Latino": "Semnopithecus vetulus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Pig-tailed Langur",
+        "Nome Latino": "Simias concolor",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Gelada",
+        "Nome Latino": "Theropithecus gelada",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Javan Lutung",
+        "Nome Latino": "Trachypithecus auratus",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Tenasserim Lutung",
+        "Nome Latino": "Trachypithecus barbei",
+        "Rarità": "ULTRA"
+    },
+    {
+        "Nome Comune": "Indochinese Gray Langur",
+        "Nome Latino": "Trachypithecus crepusculus",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Silvered Leaf Monkey",
+        "Nome Latino": "Trachypithecus cristatus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Delacour's Lutung",
+        "Nome Latino": "Trachypithecus delacouri",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "François' Lutung",
+        "Nome Latino": "Trachypithecus francoisi",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Gee's Golden Lutung",
+        "Nome Latino": "Trachypithecus geei",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Indochinese Lutung",
+        "Nome Latino": "Trachypithecus germaini",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Hatinh Lutung",
+        "Nome Latino": "Trachypithecus hatinhensis",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Laotian Lutung",
+        "Nome Latino": "Trachypithecus laotum",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "White-headed Lutung",
+        "Nome Latino": "Trachypithecus leucocephalus",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Annamese langur",
+        "Nome Latino": "Trachypithecus margarita",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "West Javan Langur",
+        "Nome Latino": "Trachypithecus mauritius",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Shan Langur",
+        "Nome Latino": "Trachypithecus melamera",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Dusky Leaf Monkey",
+        "Nome Latino": "Trachypithecus obscurus",
+        "Rarità": "COM"
+    },
+    {
+        "Nome Comune": "Phayre's Leaf Monkey",
+        "Nome Latino": "Trachypithecus phayrei",
+        "Rarità": "UNC"
+    },
+    {
+        "Nome Comune": "Capped Lutung",
+        "Nome Latino": "Trachypithecus pileatus",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Cat Ba Lutung",
+        "Nome Latino": "Trachypithecus poliocephalus",
+        "Rarità": "RARE"
+    },
+    {
+        "Nome Comune": "Popa langur",
+        "Nome Latino": "Trachypithecus popa",
+        "Rarità": "EXRA"
+    },
+    {
+        "Nome Comune": "Selangor Silvered Langur",
+        "Nome Latino": "Trachypithecus selangorensis",
+        "Rarità": "BLUNC"
+    },
+    {
+        "Nome Comune": "Shortridge's Capped Lutung",
+        "Nome Latino": "Trachypithecus shortridgei",
+        "Rarità": "ULTRA"
+    }
 ]

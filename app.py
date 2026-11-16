@@ -123,6 +123,15 @@ def save_card_to_album_folder(card):
   )
   file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
+  # Carichiamo copie e cover_index attuale preservandoli
+  copies, cover_index = load_species_copies(file_path)
+
+  # Aggiungiamo la nuova copia in fondo (mantenendo l'ordine cronologico)
+  copies.append(card)
+
+  # Salviamo mantenendo il cover_index esistente
+  save_species_copies(file_path, copies, cover_index)
+
   existing_copies = []
   if os.path.exists(file_path):
     try:
@@ -211,6 +220,29 @@ def export_user_album_to_json():
 
 def import_user_album_from_json(uploaded_file):
   """Legge un file JSON caricato dall'utente e ripristina la sua collezione di carte."""
+def load_species_copies(file_path):
+  """Legge il file JSON della specie supportando sia il vecchio formato (lista) sia il nuovo (dizionario con cover_index)."""
+  if not os.path.exists(file_path):
+    return [], 0
+  try:
+    with open(file_path, "r", encoding="utf-8") as f:
+      data = json.load(f)
+      if isinstance(data, list):
+        # Retrocompatibilità: se il file è una lista vecchia, restituiamo la lista e cover 0
+        return data, 0
+      elif isinstance(data, dict):
+        return data.get("copies", []), data.get("cover_index", 0)
+  except:
+    pass
+  return [], 0
+
+
+def save_species_copies(file_path, copies, cover_index=0):
+  """Salva i dati della specie mantenendo l'ordine dei doppioni e l'indice della copertina scelta."""
+  data = {"cover_index": cover_index, "copies": copies}
+  with open(file_path, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=4)
+    
   try:
     content = json.load(uploaded_file)
     if not os.path.exists(ALBUM_DIR):
@@ -448,13 +480,22 @@ elif st.session_state.page == "species_detail":
   safe_name = st.session_state.selected_species
   file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
-  copies = []
-  if os.path.exists(file_path):
+  copies, cover_index = load_species_copies(file_path)
+
+  # GESTIONE CAMBIO COPERTINA PULITO
+  cover_idx_to_set = st.query_params.get("set_cover", None)
+  if cover_idx_to_set is not None:
     try:
-      with open(file_path, "r", encoding="utf-8") as f:
-        copies = json.load(f)
-    except:
-      copies = []
+      idx = int(cover_idx_to_set)
+      if 0 <= idx < len(copies):
+        # Aggiorniamo solo l'indice della copertina, l'ordine dei doppioni resta intatto!
+        save_species_copies(file_path, copies, cover_index=idx)
+        del st.query_params["set_cover"]
+        st.success("⭐ Copertina aggiornata con successo!")
+        time.sleep(0.5)
+        st.rerun()
+    except Exception:
+      pass
 
   if copies:
     c_name = copies[0]["common_name"]
@@ -469,7 +510,7 @@ elif st.session_state.page == "species_detail":
       f"""<div style='font-family: Arial; text-align: center;'>
 <h2>📚 Album Dedicato: {c_name}</h2>
 <p style='font-style: italic; color: #555;'>{l_name} | Rarità: <b>{rarity}</b> | Esemplari collezionati: <b>{len(copies)}</b></p>
-<p style='color: #27ae60; font-size: 12px; margin-bottom: 20px;'>✨ Stai visualizzando esclusivamente le carte appartenenti a questa specie.</p>
+<p style='color: #27ae60; font-size: 12px; margin-bottom: 20px;'>✨ La carta contrassegnata in giallo è attualmente in mostra come copertina nell'Album Generale.</p>
 </div>""",
       unsafe_allow_html=True,
   )
@@ -487,16 +528,33 @@ elif st.session_state.page == "species_detail":
     )
     wiki_url = f"https://it.wikipedia.org/wiki/Special:Search?search={c['latin_name']}"
 
-    html_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.25); color: {theme['text']};'>
-<div style='background: #e74c3c; color: white; border-radius: 8px; padding: 2px 6px; font-size: 10px; font-weight: bold; margin-bottom: 6px; display: inline-block;'>Copia #{idx+1}</div>
-<img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-<div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left; line-height: 1.3;'>
-<div>📍 <b>Luogo:</b> {c['place_guess']}</div>
-<div>📷 <b>Foto:</b> {c['user_login']}</div>
+    # Verifichiamo se questa specifica copia è la copertina attuale
+    is_current_cover = idx == cover_index
+    badge_text = (
+        f"⭐ Copertina (Copia #{idx+1})"
+        if is_current_cover
+        else f"Copia #{idx+1}"
+    )
+    badge_bg = "#f1c40f" if is_current_cover else "#e74c3c"
+    badge_color = "#000" if is_current_cover else "#fff"
+
+    html_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.25); color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
+<div>
+    <div style='background: {badge_bg}; color: {badge_color}; border-radius: 6px; padding: 3px 6px; font-size: 9px; font-weight: bold; margin-bottom: 6px; display: inline-block;'>{badge_text}</div>
+    <img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+    <div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left; line-height: 1.3;'>
+    <div>📍 <b>Luogo:</b> {c['place_guess']}</div>
+    <div>📷 <b>Foto:</b> {c['user_login']}</div>
+    </div>
 </div>
-<div style='margin-top: 8px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
-<a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
-<a href='{wiki_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>info wiki</a>
+<div>
+    <div style='margin-top: 8px;'>
+        <a href='?user={current_user}&species={safe_name}&set_cover={idx}' target='_self' style='display: block; background: #f39c12; color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);'>⭐ Imposta Copertina</a>
+    </div>
+    <div style='margin-top: 6px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
+    <a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
+    <a href='{wiki_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>info wiki</a>
+    </div>
 </div>
 </div>"""
   html_grid += "</div>"
@@ -523,17 +581,24 @@ elif st.session_state.page == "album":
     st.session_state.page = "menu"
     st.rerun()
 
+Python
   unlocked_species = {}
   if os.path.exists(ALBUM_DIR):
     for filename in os.listdir(ALBUM_DIR):
       if filename.endswith(".json"):
         file_path = os.path.join(ALBUM_DIR, filename)
-        try:
-          with open(file_path, "r", encoding="utf-8") as f:
-            copies = json.load(f)
-            if copies:
-              safe_name = filename.replace(".json", "")
-              unlocked_species[safe_name] = copies
+        # Usiamo la nuova funzione per estrarre copie e copertina corretta
+        copies, cover_index = load_species_copies(file_path)
+        if copies:
+          safe_name = filename.replace(".json", "")
+          safe_cover_idx = (
+              cover_index if 0 <= cover_index < len(copies) else 0
+          )
+          unlocked_species[safe_name] = {
+              "copies": copies,
+              "cover_index": safe_cover_idx,
+              "sample_card": copies[safe_cover_idx],
+          }
         except:
           pass
 

@@ -592,7 +592,7 @@ elif st.session_state.page == "album":
 
           st.markdown(
               f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 10px 10px 0 0; padding: 6px; text-align: center; color: {theme['text']}; font-family: Arial;'>
-<img src='{sample_card['image_url']}' style='width: 100%; height: 75px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+<img src='{sample_card['image_url']}' style='width: 100%; height: 110px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
 <div style='font-weight: bold; font-size: 10px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
 <div style='font-size: 8px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{l_name}</div>
 </div>""",

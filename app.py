@@ -180,13 +180,12 @@ def draw_card(slot_index):
   # --- LOGICA DI ABBINAMENTO FLESSIBILE PER NOME LATINO / COMUNE ---
   matched_obs = None
   
-  # 1. Cerchiamo prima per corrispondenza parziale nel nome latino (es. cattura le sottospecie)
+  # 1. Cerchiamo per corrispondenza parziale nel nome latino (cattura anche le sottospecie)
   l_lower = latin_name.lower()
   matching_obs_list = []
   
   for sci_key, obs_list in species_data_txt.items():
-    # Se il nome della specie è contenuto nella chiave del txt (o viceversa)
-    if l_lower in sci_key or sci_key in l_key:
+    if l_lower in sci_key or sci_key in l_lower:
       matching_obs_list.extend(obs_list)
 
   # 2. Se non troviamo nulla col latino, proviamo col nome comune
@@ -249,7 +248,6 @@ def import_user_album_from_json(uploaded_file):
     for filename, data in content.items():
       file_path = os.path.join(ALBUM_DIR, filename)
       if isinstance(data, list):
-        # Retrocompatibilità per vecchi backup in formato lista
         save_species_copies(file_path, data, 0)
       elif isinstance(data, dict):
         save_species_copies(file_path, data.get("copies", []), data.get("cover_index", 0))

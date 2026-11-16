@@ -581,7 +581,6 @@ elif st.session_state.page == "album":
     st.session_state.page = "menu"
     st.rerun()
 
-Python
   unlocked_species = {}
   if os.path.exists(ALBUM_DIR):
     for filename in os.listdir(ALBUM_DIR):

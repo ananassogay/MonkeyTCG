@@ -257,14 +257,19 @@ def draw_card(slot_index):
 
 
 def export_user_album_to_json():
-  """Export di backup scaricando i dati da Google Sheets."""
-  df_all = load_all_cards_from_gsheets()
-  user_cards = df_all[df_all["player_name"] == current_user]
-  return user_cards.to_json(orient="records", ensure_ascii=False, indent=4)
+  """Raccoglie tutte le carte salvate su Google Sheets per l'export sicuro in JSON."""
+  try:
+    df_all = load_all_cards_from_gsheets()
+    if df_all.empty or "player_name" not in df_all.columns:
+      return "{}"
+    user_cards = df_all[df_all["player_name"] == current_user]
+    return user_cards.to_json(orient="records", ensure_ascii=False, indent=4)
+  except Exception:
+    return "{}"
 
 
 def import_user_album_from_json(uploaded_file):
-  """Importa carte dal JSON inserendole nel Foglio Google."""
+  """Legge un file JSON di backup e ripristina la collezione su Google Sheets."""
   try:
     content = json.load(uploaded_file)
     if isinstance(content, list):

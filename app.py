@@ -18,25 +18,20 @@ TXT_FILE = os.path.join(BASE_DIR, "osservazioni.txt")
 
 # --- 1.2 CONNESSIONE A GOOGLE SHEETS (GSPREAD) ---
 def get_gspread_client():
-    """Inizializza la connessione a Google Sheets usando i Secrets di Streamlit."""
     scope = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
     ]
     secrets_dict = dict(st.secrets["connections"]["gsheets"])
-    # Estrae il dizionario JSON dal blocco service_account_json dei secrets
     if "service_account_json" in secrets_dict:
-        import json
         if isinstance(secrets_dict["service_account_json"], str):
             sa_info = json.loads(secrets_dict["service_account_json"])
         else:
             sa_info = secrets_dict["service_account_json"]
     else:
         sa_info = secrets_dict
-
     creds = Credentials.from_service_account_info(sa_info, scopes=scope)
-    client = gspread.authorize(creds)
-    return client
+    return gspread.authorize(creds)
 
 def load_all_cards_from_gsheets():
     """Carica tutte le carte salvate nel Foglio Google restituendo un DataFrame."""
@@ -51,14 +46,14 @@ def load_all_cards_from_gsheets():
                 "image_url", "place_guess", "user_login", "obs_id", "is_cover"
             ])
         return pd.DataFrame(data)
-    except Exception as e:
+    except Exception:
         return pd.DataFrame(columns=[
             "player_name", "common_name", "latin_name", "rarity", 
             "image_url", "place_guess", "user_login", "obs_id", "is_cover"
         ])
 
-def save_card_to_gsheets(card_data, player_name):
-    """Aggiunge una nuova carta in coda al Foglio Google in modo sicuro."""
+def save_card_to_gsheets(card_data, player_name, is_cover=False):
+    """Aggiunge una nuova carta sul Foglio Google in modo sicuro."""
     try:
         client = get_gspread_client()
         spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
@@ -71,29 +66,27 @@ def save_card_to_gsheets(card_data, player_name):
             card_data["image_url"],
             card_data["place_guess"],
             card_data["user_login"],
-            card_data["obs_id"],
-            False
+            str(card_data["obs_id"]),
+            str(is_cover)
         ]
         sheet.append_row(row)
     except Exception as e:
         st.error(f"Errore di salvataggio su Cloud: {e}")
 
 def update_cover_in_gsheets(player_name, common_name, selected_obs_id):
-    """Aggiorna la copertina modificando le celle direttamente nel foglio."""
+    """Aggiorna quale copia è impostata come copertina nel Foglio Google."""
     try:
         client = get_gspread_client()
         spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         sheet = client.open_by_url(spreadsheet_url).worksheet("carte")
         records = sheet.get_all_records()
         
-        # Scorriamo le righe per trovare corrispondenze e aggiornare la colonna is_cover
-        for idx, row in enumerate(records, start=2): # start=2 perché la riga 1 è l'intestazione
+        for idx, row in enumerate(records, start=2):
             if str(row.get("player_name")) == str(player_name) and str(row.get("common_name")) == str(common_name):
                 is_target = str(row.get("obs_id")) == str(selected_obs_id)
-                # Troviamo la colonna "is_cover" (assumendo sia la 9°)
-                sheet.update_cell(idx, 9, is_target)
+                sheet.update_cell(idx, 9, str(is_target))
     except Exception as e:
-        st.error(f"Errore durante l'aggiornamento della copertina: {e}")
+        st.error(f"Errore aggiornamento copertina: {e}")
 
 # --- 1.5 SCHERMATA LOGIN / NOME UTENTE ---
 if "player_name" not in st.session_state:
@@ -102,7 +95,6 @@ if "player_name" not in st.session_state:
   else:
     st.session_state.player_name = None
 
-# Se l'utente non è ancora inserito, mostriamo solo la schermata di benvenuto
 if not st.session_state.player_name:
   st.markdown(
       """<div style='text-align: center; padding: 40px 20px; background: #427a4d; border-radius: 15px; color: white; font-family: Arial; margin-bottom: 20px;'>
@@ -127,23 +119,17 @@ if not st.session_state.player_name:
         st.rerun()
       else:
         st.error("Per favore, inserisci un nome valido!")
-  st.stop()  # Ferma la pagina qui finché non viene digitato il nome
+  st.stop()
 
 current_user = st.session_state.player_name
 
-# Controlliamo se è stata selezionata una specie dall'album HTML
 if "species" in st.query_params:
   st.session_state.selected_species = st.query_params["species"]
   st.session_state.page = "species_detail"
   del st.query_params["species"]
 
-# Cartella dell'album unica per il giocatore
-ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
-if not os.path.exists(ALBUM_DIR):
-  os.makedirs(ALBUM_DIR)
 
-
-# --- 2. CARICAMENTO DATI ---
+# --- 2. CARICAMENTO DATI GIOCO ---
 @st.cache_data
 def load_game_data():
   species_data = []
@@ -154,7 +140,7 @@ def load_game_data():
   species_data_txt = {}
   if os.path.exists(TXT_FILE):
     with open(TXT_FILE, "r", encoding="utf-8", errors="ignore") as f:
-      f.readline()  # Skip header
+      f.readline()
       for line in f:
         parts = line.strip().split("\t")
         if len(parts) >= 6:
@@ -184,11 +170,11 @@ def load_game_data():
 
 species_data, species_data_txt = load_game_data()
 
-# --- 3. REGOLE DELLE PROBABILITÀ E GESTIONE ALBUM ---
+# --- 3. REGOLE DELLE PROBABILITÀ E PESCAGGIO ---
 slots_probs = [
-    {"EXCO": 25, "COM": 75},  # 1° carta
-    {"EXCO": 14, "COM": 75, "BLUNC": 11},  # 2° carta
-    {"COM": 15, "BLUNC": 35, "UNC": 35, "RARE": 10, "EXRA": 5},  # 3° carta
+    {"EXCO": 25, "COM": 75},
+    {"EXCO": 14, "COM": 75, "BLUNC": 11},
+    {"COM": 15, "BLUNC": 35, "UNC": 35, "RARE": 10, "EXRA": 5},
     {
         "COM": 9,
         "BLUNC": 25,
@@ -196,43 +182,9 @@ slots_probs = [
         "RARE": 25,
         "EXRA": 10,
         "ULTRA": 1,
-    },  # 4° carta
-    {"BLUNC": 5, "UNC": 15, "RARE": 27, "EXRA": 45, "ULTRA": 8},  # 5° carta
+    },
+    {"BLUNC": 5, "UNC": 15, "RARE": 27, "EXRA": 45, "ULTRA": 8},
 ]
-
-
-def load_species_copies(file_path):
-  """Legge il file JSON della specie supportando sia il vecchio formato (lista) sia il nuovo (dizionario con cover_index)."""
-  if not os.path.exists(file_path):
-    return [], 0
-  try:
-    with open(file_path, "r", encoding="utf-8") as f:
-      data = json.load(f)
-      if isinstance(data, list):
-        return data, 0
-      elif isinstance(data, dict):
-        return data.get("copies", []), data.get("cover_index", 0)
-  except:
-    pass
-  return [], 0
-
-
-def save_species_copies(file_path, copies, cover_index=0):
-  """Salva i dati della specie mantenendo l'ordine dei doppioni e l'indice della copertina scelta."""
-  data = {"cover_index": cover_index, "copies": copies}
-  with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
-
-
-def save_card_to_album_folder(card):
-  safe_name = (
-      card["common_name"].replace("/", "_").replace(" ", "_").lower()
-  )
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
-
-  copies, cover_index = load_species_copies(file_path)
-  copies.append(card)
-  save_species_copies(file_path, copies, cover_index)
 
 
 def draw_card(slot_index):
@@ -259,25 +211,20 @@ def draw_card(slot_index):
   user_login = "Anonimo"
   obs_id = ""
 
-  # --- LOGICA DI ABBINAMENTO FLESSIBILE PER NOME LATINO / COMUNE ---
   matched_obs = None
-  
-  # 1. Cerchiamo per corrispondenza parziale nel nome latino (cattura anche le sottospecie)
   l_lower = latin_name.lower()
   matching_obs_list = []
-  
+
   for sci_key, obs_list in species_data_txt.items():
     if l_lower in sci_key or sci_key in l_lower:
       matching_obs_list.extend(obs_list)
 
-  # 2. Se non troviamo nulla col latino, proviamo col nome comune
   if not matching_obs_list and common_name and common_name != "nan":
     c_lower = common_name.lower()
     for com_key, obs_list in species_data_txt.items():
       if c_lower in com_key or com_key in c_lower:
         matching_obs_list.extend(obs_list)
 
-  # 3. Se abbiamo trovato delle osservazioni compatibili, ne peschiamo una a caso
   if matching_obs_list:
     matched_obs = random.choice(matching_obs_list)
 
@@ -287,10 +234,12 @@ def draw_card(slot_index):
     user_login = matched_obs["user_login"]
     obs_id = matched_obs["obs_id"]
 
-  safe_name = common_name.replace("/", "_").replace(" ", "_").lower()
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
-
-  is_new_species = not os.path.exists(file_path) or os.path.getsize(file_path) == 0
+  # Verifica se è una nuova specie controllando sul Foglio Google
+  df_user = load_all_cards_from_gsheets()
+  user_cards = df_user[df_user["player_name"] == current_user] if not df_user.empty else pd.DataFrame()
+  is_new_species = True
+  if not user_cards.empty and "common_name" in user_cards.columns:
+    is_new_species = common_name not in user_cards["common_name"].values
 
   card_data = {
       "common_name": common_name,
@@ -303,39 +252,28 @@ def draw_card(slot_index):
       "is_new": is_new_species,
   }
 
-  save_card_to_album_folder(card_data)
+  save_card_to_gsheets(card_data, current_user, is_cover=False)
   return card_data
 
 
 def export_user_album_to_json():
-  """Raccoglie tutte le carte salvate nella cartella dell'utente per l'export."""
-  all_cards_data = {}
-  if os.path.exists(ALBUM_DIR):
-    for filename in os.listdir(ALBUM_DIR):
-      if filename.endswith(".json"):
-        file_path = os.path.join(ALBUM_DIR, filename)
-        copies, cover_index = load_species_copies(file_path)
-        if copies:
-          all_cards_data[filename] = {"copies": copies, "cover_index": cover_index}
-  return json.dumps(all_cards_data, ensure_ascii=False, indent=4)
+  """Export di backup scaricando i dati da Google Sheets."""
+  df_all = load_all_cards_from_gsheets()
+  user_cards = df_all[df_all["player_name"] == current_user]
+  return user_cards.to_json(orient="records", ensure_ascii=False, indent=4)
 
 
 def import_user_album_from_json(uploaded_file):
-  """Legge un file JSON di backup e ripristina la collezione."""
+  """Importa carte dal JSON inserendole nel Foglio Google."""
   try:
     content = json.load(uploaded_file)
-    if not os.path.exists(ALBUM_DIR):
-      os.makedirs(ALBUM_DIR)
-
-    for filename, data in content.items():
-      file_path = os.path.join(ALBUM_DIR, filename)
-      if isinstance(data, list):
-        save_species_copies(file_path, data, 0)
-      elif isinstance(data, dict):
-        save_species_copies(file_path, data.get("copies", []), data.get("cover_index", 0))
-    return True
+    if isinstance(content, list):
+      for c in content:
+        save_card_to_gsheets(c, current_user, is_cover=c.get("is_cover", False))
+      return True
   except Exception:
-    return False
+    pass
+  return False
 
 
 # --- 4. CONFIGURAZIONE COLORI DI RARITÀ ---
@@ -555,23 +493,26 @@ elif st.session_state.page == "pack_opening":
 # C. SOTTO-ALBUM SPECIFICO DELLA SPECIE (DOPPIONI & COPERTINA)
 elif st.session_state.page == "species_detail":
   safe_name = st.session_state.selected_species
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
 
-  copies, cover_index = load_species_copies(file_path)
+  df_all = load_all_cards_from_gsheets()
+  user_cards = df_all[df_all["player_name"] == current_user] if not df_all.empty else pd.DataFrame()
+  
+  if not user_cards.empty and "common_name" in user_cards.columns:
+    matched_rows = user_cards[user_cards["common_name"].str.replace("/", "_").str.replace(" ", "_").str.lower() == safe_name]
+    copies = matched_rows.to_dict("records")
+  else:
+    copies = []
 
   # GESTIONE CAMBIO COPERTINA
-  cover_idx_to_set = st.query_params.get("set_cover", None)
-  if cover_idx_to_set is not None:
-    try:
-      idx = int(cover_idx_to_set)
-      if 0 <= idx < len(copies):
-        save_species_copies(file_path, copies, cover_index=idx)
-        del st.query_params["set_cover"]
-        st.success("⭐ Copertina aggiornata con successo!")
-        time.sleep(0.5)
-        st.rerun()
-    except Exception:
-      pass
+  cover_obs_to_set = st.query_params.get("set_cover", None)
+  if cover_obs_to_set is not None:
+    if copies:
+      c_name = copies[0]["common_name"]
+      update_cover_in_gsheets(current_user, c_name, cover_obs_to_set)
+      del st.query_params["set_cover"]
+      st.success("⭐ Copertina aggiornata con successo!")
+      time.sleep(0.5)
+      st.rerun()
 
   if copies:
     c_name = copies[0]["common_name"]
@@ -593,7 +534,7 @@ elif st.session_state.page == "species_detail":
 
   html_grid = "<div style='font-family: Arial; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 10px;'>"
   for idx, c in enumerate(copies):
-    r_key = c["rarity"].upper()
+    r_key = str(c["rarity"]).upper()
     theme = rarity_theme.get(
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
@@ -604,7 +545,7 @@ elif st.session_state.page == "species_detail":
     )
     wiki_url = f"https://it.wikipedia.org/wiki/Special:Search?search={c['latin_name']}"
 
-    is_current_cover = idx == cover_index
+    is_current_cover = str(c.get("is_cover", "")).lower() == "true" or (idx == 0 and not any(str(x.get("is_cover", "")).lower() == "true" for x in copies))
     badge_text = (
         f"⭐ Copertina (Copia #{idx+1})"
         if is_current_cover
@@ -624,7 +565,7 @@ elif st.session_state.page == "species_detail":
 </div>
 <div>
     <div style='margin-top: 8px;'>
-        <a href='?user={current_user}&species={safe_name}&set_cover={idx}' target='_self' style='display: block; background: #f39c12; color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);'>⭐ Imposta Copertina</a>
+        <a href='?user={current_user}&species={safe_name}&set_cover={c["obs_id"]}' target='_self' style='display: block; background: #f39c12; color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);'>⭐ Imposta Copertina</a>
     </div>
     <div style='margin-top: 6px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
     <a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
@@ -656,25 +597,19 @@ elif st.session_state.page == "album":
     st.session_state.page = "menu"
     st.rerun()
 
+  df_all = load_all_cards_from_gsheets()
+  user_cards = df_all[df_all["player_name"] == current_user] if not df_all.empty else pd.DataFrame()
+
   unlocked_species = {}
-  if os.path.exists(ALBUM_DIR):
-    for filename in os.listdir(ALBUM_DIR):
-      if filename.endswith(".json"):
-        file_path = os.path.join(ALBUM_DIR, filename)
-        try:
-          copies, cover_index = load_species_copies(file_path)
-          if copies:
-            safe_name = filename.replace(".json", "")
-            safe_cover_idx = (
-                cover_index if 0 <= cover_index < len(copies) else 0
-            )
-            unlocked_species[safe_name] = {
-                "copies": copies,
-                "cover_index": safe_cover_idx,
-                "sample_card": copies[safe_cover_idx],
-            }
-        except:
-          pass
+  if not user_cards.empty and "common_name" in user_cards.columns:
+    for c_name, group in user_cards.groupby("common_name"):
+      safe_name = str(c_name).replace("/", "_").replace(" ", "_").lower()
+      cover_row = group[group["is_cover"].astype(str).str.lower() == "true"]
+      sample = cover_row.iloc[0] if not cover_row.empty else group.iloc[0]
+      unlocked_species[safe_name] = {
+          "copies": group.to_dict("records"),
+          "sample_card": sample.to_dict(),
+      }
 
   total_species = len(species_data)
   found_count = len(unlocked_species)
@@ -748,7 +683,7 @@ elif st.session_state.page == "album":
       copies_list = item_data["copies"]
       cnt = len(copies_list)
       sample_card = item_data["sample_card"]
-      r_key = sample_card["rarity"].upper()
+      r_key = str(sample_card["rarity"]).upper()
       theme = rarity_theme.get(
           r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
       )
@@ -810,7 +745,7 @@ elif st.session_state.page == "album":
       if uploaded_backup is not None:
         if st.button("🔄 Ripristina Album", use_container_width=True):
           if import_user_album_from_json(uploaded_backup):
-            st.success("✅ Album ripristinato con successo!")
+            st.success("✅ Album ripristinato con successo su Google Sheets!")
             time.sleep(1)
             st.rerun()
           else:

@@ -2,7 +2,9 @@ import json
 import os
 import random
 import time
+import pandas as pd
 import streamlit as st
+from streamlit_gsheets import GSheetsConnection
 
 # --- 1. CONFIGURAZIONE PAGINA E PERCORSI ---
 st.set_page_config(
@@ -13,6 +15,60 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_FILE = os.path.join(BASE_DIR, "scimmie.json")
 TXT_FILE = os.path.join(BASE_DIR, "osservazioni.txt")
 
+# --- 1.2 CONNESSIONE A GOOGLE SHEETS ---
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+
+def load_all_cards_from_gsheets():
+  """Carica tutte le carte salvate nel Foglio Google."""
+  try:
+    df = conn.read(worksheet="carte", ttl="0s")
+    return df
+  except Exception:
+    return pd.DataFrame(
+        columns=[
+            "player_name",
+            "common_name",
+            "latin_name",
+            "rarity",
+            "image_url",
+            "place_guess",
+            "user_login",
+            "obs_id",
+            "is_cover",
+        ]
+    )
+
+
+def save_card_to_gsheets(card_data, player_name):
+  """Salva una singola nuova carta sul Foglio Google."""
+  df = load_all_cards_from_gsheets()
+  new_row = pd.DataFrame([{
+      "player_name": player_name,
+      "common_name": card_data["common_name"],
+      "latin_name": card_data["latin_name"],
+      "rarity": card_data["rarity"],
+      "image_url": card_data["image_url"],
+      "place_guess": card_data["place_guess"],
+      "user_login": card_data["user_login"],
+      "obs_id": card_data["obs_id"],
+      "is_cover": False,
+  }])
+  updated_df = pd.concat([df, new_row], ignore_index=True)
+  conn.update(worksheet="carte", data=updated_df)
+
+
+def update_cover_in_gsheets(player_name, common_name, selected_obs_id):
+  """Aggiorna quale carta è la copertina dell'album."""
+  df = load_all_cards_from_gsheets()
+  mask = (df["player_name"] == player_name) & (
+      df["common_name"] == common_name
+  )
+  df.loc[mask, "is_cover"] = False
+  df.loc[mask & (df["obs_id"] == selected_obs_id), "is_cover"] = True
+  conn.update(worksheet="carte", data=df)
+
+
 # --- 1.5 SCHERMATA LOGIN / NOME UTENTE ---
 if "player_name" not in st.session_state:
   if "user" in st.query_params:
@@ -20,7 +76,6 @@ if "player_name" not in st.session_state:
   else:
     st.session_state.player_name = None
 
-# Se l'utente non è ancora inserito, mostriamo solo la schermata di benvenuto
 if not st.session_state.player_name:
   st.markdown(
       """<div style='text-align: center; padding: 40px 20px; background: #427a4d; border-radius: 15px; color: white; font-family: Arial; margin-bottom: 20px;'>
@@ -45,23 +100,17 @@ if not st.session_state.player_name:
         st.rerun()
       else:
         st.error("Per favore, inserisci un nome valido!")
-  st.stop()  # Ferma la pagina qui finché non viene digitato il nome
+  st.stop()
 
 current_user = st.session_state.player_name
 
-# Controlliamo se è stata selezionata una specie dall'album HTML
 if "species" in st.query_params:
   st.session_state.selected_species = st.query_params["species"]
   st.session_state.page = "species_detail"
   del st.query_params["species"]
 
-# Cartella dell'album unica per il giocatore
-ALBUM_DIR = os.path.join(BASE_DIR, f"album_carte_{current_user}")
-if not os.path.exists(ALBUM_DIR):
-  os.makedirs(ALBUM_DIR)
 
-
-# --- 2. CARICAMENTO DATI ---
+# --- 2. CARICAMENTO DATI GIOCO ---
 @st.cache_data
 def load_game_data():
   species_data = []
@@ -72,7 +121,7 @@ def load_game_data():
   species_data_txt = {}
   if os.path.exists(TXT_FILE):
     with open(TXT_FILE, "r", encoding="utf-8", errors="ignore") as f:
-      f.readline()  # Skip header
+      f.readline()
       for line in f:
         parts = line.strip().split("\t")
         if len(parts) >= 6:
@@ -102,11 +151,11 @@ def load_game_data():
 
 species_data, species_data_txt = load_game_data()
 
-# --- 3. REGOLE DELLE PROBABILITÀ E GESTIONE ALBUM ---
+# --- 3. PROBABILITÀ E PESCAGGIO ---
 slots_probs = [
-    {"EXCO": 25, "COM": 75},  # 1° carta
-    {"EXCO": 14, "COM": 75, "BLUNC": 11},  # 2° carta
-    {"COM": 15, "BLUNC": 35, "UNC": 35, "RARE": 10, "EXRA": 5},  # 3° carta
+    {"EXCO": 25, "COM": 75},
+    {"EXCO": 14, "COM": 75, "BLUNC": 11},
+    {"COM": 15, "BLUNC": 35, "UNC": 35, "RARE": 10, "EXRA": 5},
     {
         "COM": 9,
         "BLUNC": 25,
@@ -114,43 +163,9 @@ slots_probs = [
         "RARE": 25,
         "EXRA": 10,
         "ULTRA": 1,
-    },  # 4° carta
-    {"BLUNC": 5, "UNC": 15, "RARE": 27, "EXRA": 45, "ULTRA": 8},  # 5° carta
+    },
+    {"BLUNC": 5, "UNC": 15, "RARE": 27, "EXRA": 45, "ULTRA": 8},
 ]
-
-
-def load_species_copies(file_path):
-  """Legge il file JSON della specie supportando sia il vecchio formato (lista) sia il nuovo (dizionario con cover_index)."""
-  if not os.path.exists(file_path):
-    return [], 0
-  try:
-    with open(file_path, "r", encoding="utf-8") as f:
-      data = json.load(f)
-      if isinstance(data, list):
-        return data, 0
-      elif isinstance(data, dict):
-        return data.get("copies", []), data.get("cover_index", 0)
-  except:
-    pass
-  return [], 0
-
-
-def save_species_copies(file_path, copies, cover_index=0):
-  """Salva i dati della specie mantenendo l'ordine dei doppioni e l'indice della copertina scelta."""
-  data = {"cover_index": cover_index, "copies": copies}
-  with open(file_path, "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=4)
-
-
-def save_card_to_album_folder(card):
-  safe_name = (
-      card["common_name"].replace("/", "_").replace(" ", "_").lower()
-  )
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
-
-  copies, cover_index = load_species_copies(file_path)
-  copies.append(card)
-  save_species_copies(file_path, copies, cover_index)
 
 
 def draw_card(slot_index):
@@ -177,25 +192,20 @@ def draw_card(slot_index):
   user_login = "Anonimo"
   obs_id = ""
 
-  # --- LOGICA DI ABBINAMENTO FLESSIBILE PER NOME LATINO / COMUNE ---
   matched_obs = None
-  
-  # 1. Cerchiamo per corrispondenza parziale nel nome latino (cattura anche le sottospecie)
   l_lower = latin_name.lower()
   matching_obs_list = []
-  
+
   for sci_key, obs_list in species_data_txt.items():
     if l_lower in sci_key or sci_key in l_lower:
       matching_obs_list.extend(obs_list)
 
-  # 2. Se non troviamo nulla col latino, proviamo col nome comune
   if not matching_obs_list and common_name and common_name != "nan":
     c_lower = common_name.lower()
     for com_key, obs_list in species_data_txt.items():
       if c_lower in com_key or com_key in c_lower:
         matching_obs_list.extend(obs_list)
 
-  # 3. Se abbiamo trovato delle osservazioni compatibili, ne peschiamo una a caso
   if matching_obs_list:
     matched_obs = random.choice(matching_obs_list)
 
@@ -205,10 +215,10 @@ def draw_card(slot_index):
     user_login = matched_obs["user_login"]
     obs_id = matched_obs["obs_id"]
 
-  safe_name = common_name.replace("/", "_").replace(" ", "_").lower()
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
-
-  is_new_species = not os.path.exists(file_path) or os.path.getsize(file_path) == 0
+  # Verifichiamo se è nuova consultando il DB su Google Sheets
+  df_user = load_all_cards_from_gsheets()
+  user_cards = df_user[df_user["player_name"] == current_user]
+  is_new_species = common_name not in user_cards["common_name"].values
 
   card_data = {
       "common_name": common_name,
@@ -221,42 +231,11 @@ def draw_card(slot_index):
       "is_new": is_new_species,
   }
 
-  save_card_to_album_folder(card_data)
+  save_card_to_gsheets(card_data, current_user)
   return card_data
 
 
-def export_user_album_to_json():
-  """Raccoglie tutte le carte salvate nella cartella dell'utente per l'export."""
-  all_cards_data = {}
-  if os.path.exists(ALBUM_DIR):
-    for filename in os.listdir(ALBUM_DIR):
-      if filename.endswith(".json"):
-        file_path = os.path.join(ALBUM_DIR, filename)
-        copies, cover_index = load_species_copies(file_path)
-        if copies:
-          all_cards_data[filename] = {"copies": copies, "cover_index": cover_index}
-  return json.dumps(all_cards_data, ensure_ascii=False, indent=4)
-
-
-def import_user_album_from_json(uploaded_file):
-  """Legge un file JSON di backup e ripristina la collezione."""
-  try:
-    content = json.load(uploaded_file)
-    if not os.path.exists(ALBUM_DIR):
-      os.makedirs(ALBUM_DIR)
-
-    for filename, data in content.items():
-      file_path = os.path.join(ALBUM_DIR, filename)
-      if isinstance(data, list):
-        save_species_copies(file_path, data, 0)
-      elif isinstance(data, dict):
-        save_species_copies(file_path, data.get("copies", []), data.get("cover_index", 0))
-    return True
-  except Exception:
-    return False
-
-
-# --- 4. CONFIGURAZIONE COLORI DI RARITÀ ---
+# --- 4. COLORI DI RARITÀ ---
 rarity_theme = {
     "EXCO": {"bg": "#34495e", "border": "#2c3e50", "text": "#ecf0f1"},
     "COM": {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"},
@@ -267,7 +246,7 @@ rarity_theme = {
     "ULTRA": {"bg": "#c0392b", "border": "#962d22", "text": "#ffffff"},
 }
 
-# --- 5. GESTIONE STATO SESSIONE STREAMLIT ---
+# --- 5. GESTIONE STATO ---
 if "page" not in st.session_state:
   st.session_state.page = "menu"
 if "current_pack_cards" not in st.session_state:
@@ -277,7 +256,7 @@ if "current_card_index" not in st.session_state:
 if "selected_species" not in st.session_state:
   st.session_state.selected_species = None
 
-# --- 6. INTERFACCIA E FLUSSO APPLICAZIONE ---
+# --- 6. INTERFACCIA APPLICAZIONE ---
 
 # A. MENU PRINCIPALE
 if st.session_state.page == "menu":
@@ -299,57 +278,17 @@ if st.session_state.page == "menu":
     )
   with col2:
     if st.button("Apri Bustina 🎁", use_container_width=True, type="primary"):
-      if pack_choice != "Bustina Scimmie":
-        st.error("Questo pacchetto non è disponibile!")
-      else:
-        with st.spinner("Apertura bustina in corso..."):
-          st.markdown(
-              """<style>
-@keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  20% { transform: translate(-3px, 0px) rotate(-3deg); }
-  40% { transform: translate(3px, 2px) rotate(3deg); }
-  60% { transform: translate(-1px, -1px) rotate(0deg); }
-  80% { transform: translate(3px, 1px) rotate(1deg); }
-  100% { transform: translate(0px, 0px) rotate(0deg); }
-}
-.pack-container { text-align: center; padding: 20px; }
-.booster-pack {
-  display: inline-block;
-  background: linear-gradient(135deg, #1b5e20, #4caf50);
-  border: 4px solid #ffd700;
-  border-radius: 15px;
-  width: 220px;
-  height: 320px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  animation: shake 0.5s infinite;
-  color: white;
-  padding-top: 100px;
-  font-family: Arial, sans-serif;
-}
-</style>
-<div class='pack-container'>
-    <div class='booster-pack'>
-       <h1 style='color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);'>MONKEY<br>PACK</h1>
-       <p style='font-size: 12px; margin-top: 50px;'>iNaturalist TCG</p>
-    </div>
-</div>""",
-              unsafe_allow_html=True,
-          )
-          time.sleep(1.5)
-          st.session_state.current_pack_cards = [
-              draw_card(i) for i in range(5)
-          ]
-          st.session_state.current_card_index = 0
-          st.session_state.page = "pack_opening"
-          st.rerun()
+      with st.spinner("Apertura bustina in corso..."):
+        time.sleep(1.0)
+        st.session_state.current_pack_cards = [draw_card(i) for i in range(5)]
+        st.session_state.current_card_index = 0
+        st.session_state.page = "pack_opening"
+        st.rerun()
 
   st.write("---")
-  col_album = st.columns(1)[0]
-  with col_album:
-    if st.button("📖 Apri Album & Pokedex", use_container_width=True):
-      st.session_state.page = "album"
-      st.rerun()
+  if st.button("📖 Apri Album & Pokedex", use_container_width=True):
+    st.session_state.page = "album"
+    st.rerun()
 
   st.write("---")
   if st.button("🔄 Cambia Profilo / Esci", use_container_width=True):
@@ -357,7 +296,7 @@ if st.session_state.page == "menu":
     st.query_params.clear()
     st.rerun()
 
-# B. APERTURA BUSTINA & CARTE SINGOLE / RIEPILOGO
+# B. APERTURA BUSTINA
 elif st.session_state.page == "pack_opening":
   pack = st.session_state.current_pack_cards
   idx = st.session_state.current_card_index
@@ -368,24 +307,21 @@ elif st.session_state.page == "pack_opening":
     theme = rarity_theme.get(
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
-
     is_rare_card = r_key in ["RARE", "EXRA", "ULTRA"]
-    extra_style = ""
-    if is_rare_card:
-      extra_style = "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"
-
-    new_badge = ""
-    if c.get("is_new", False):
-      new_badge = "<div style='display: inline-block; background: #f1c40f; color: #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
-
-    st.markdown("""
-    <style>
-    @keyframes pulseGlow {
-        0% { border-color: #f1c40f; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5), 0 10px 25px rgba(0,0,0,0.3); }
-        100% { border-color: #e74c3c; box-shadow: 0 0 25px rgba(231, 76, 60, 0.8), 0 10px 25px rgba(0,0,0,0.3); }
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    extra_style = (
+        "animation: pulseGlow 1.5s infinite alternate; box-shadow: 0 0 20px"
+        " #f1c40f, 0 10px 25px rgba(0,0,0,0.3) !important;"
+        if is_rare_card
+        else ""
+    )
+    new_badge = (
+        "<div style='display: inline-block; background: #f1c40f; color:"
+        " #2c3e50; font-weight: bold; padding: 4px 10px; border-radius: 20px;"
+        " font-size: 11px; margin-bottom: 8px; box-shadow: 0 2px 5px"
+        " rgba(0,0,0,0.2);'>✨ NUOVA SPECIE!</div>"
+        if c.get("is_new", False)
+        else ""
+    )
 
     card_html = f"""<div style='text-align: center; font-family: Arial;'>
 <h3 style='color: #2c3e50;'>🎴 Carta {idx + 1} di 5</h3>
@@ -403,15 +339,6 @@ elif st.session_state.page == "pack_opening":
 </div>"""
     st.markdown(card_html, unsafe_allow_html=True)
 
-    is_new_card = c.get("is_new", False)
-
-    if is_new_card:
-      sound_url = f"https://assets.mixkit.co/active_storage/sfx/866/866-preview.mp3?t={random.randint(1000, 9999)}"
-      st.markdown(
-          f"<audio src='{sound_url}' autoplay></audio>",
-          unsafe_allow_html=True,
-      )
-
     st.write("##")
     btn_label = (
         "✨ Mostra il riepilogo del pacchetto"
@@ -425,7 +352,7 @@ elif st.session_state.page == "pack_opening":
   else:
     html_summary = f"""<div style='text-align: center;'>
 <h2>🎉 Riepilogo Pacchetto: Ecco le 5 carte trovate!</h2>
-<p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state aggiunte alla tua collezione e salvate nell'album.</p>
+<p style='color: #666; margin-bottom: 20px;'>Tutte le carte sono state salvate in modo permanente sul tuo Google Sheet!</p>
 <div style='display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;'>"""
 
     for i, c in enumerate(pack):
@@ -433,23 +360,17 @@ elif st.session_state.page == "pack_opening":
       theme = rarity_theme.get(
           r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
       )
+      summary_badge = (
+          """<div style='background: #f1c40f; color: #000; font-size: 9px; font-weight: bold; border-radius: 4px; margin-bottom: 4px; padding: 2px 4px;'>✨ NUOVA!</div>"""
+          if c.get("is_new", False)
+          else ""
+      )
 
-      summary_badge = ""
-      if c.get("is_new", False):
-        summary_badge = """<div style='background: #f1c40f; color: #000; font-size: 9px; font-weight: bold; border-radius: 4px; margin-bottom: 4px; padding: 2px 4px; text-transform: uppercase;'>
-✨ NUOVA!
-</div>"""
-
-      html_summary += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']};'>
+      html_summary += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; color: {theme['text']};'>
 {summary_badge}
-<div style='font-size: 10px; font-weight: bold; margin-bottom: 4px;'>#{i+1} - {c['rarity']}</div>
-<div style='background-color: #000; background-image: url("{c['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 100px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);'></div>
+<div style='font-size: 10px; font-weight: bold;'>#{i+1} - {c['rarity']}</div>
+<div style='background-color: #000; background-image: url("{c['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 100px; border-radius: 6px;'></div>
 <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['common_name']}</div>
-<div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c['latin_name']}</div>
-<div style='font-size: 8px; background: rgba(0,0,0,0.25); padding: 3px; border-radius: 4px; margin-top: 4px; text-align: left; line-height: 1.2;'>
-<div>📍 {c['place_guess'][:18]}...</div>
-<div>📷 {c['user_login']}</div>
-</div>
 </div>"""
 
     html_summary += "</div></div>"
@@ -458,95 +379,77 @@ elif st.session_state.page == "pack_opening":
 
     col_a, col_b = st.columns(2)
     with col_a:
-      if st.button(
-          "Torna al Menu 🏠", use_container_width=True, key="menu_summary"
-      ):
+      if st.button("Torna al Menu 🏠", use_container_width=True):
         st.session_state.page = "menu"
         st.rerun()
     with col_b:
-      if st.button(
-          "📖 Apri Album", use_container_width=True, type="primary"
-      ):
+      if st.button("📖 Apri Album", use_container_width=True, type="primary"):
         st.session_state.page = "album"
         st.rerun()
 
-# C. SOTTO-ALBUM SPECIFICO DELLA SPECIE (DOPPIONI & COPERTINA)
+# C. SOTTO-ALBUM SPECIFICO DELLA SPECIE
 elif st.session_state.page == "species_detail":
   safe_name = st.session_state.selected_species
-  file_path = os.path.join(ALBUM_DIR, f"{safe_name}.json")
+  df_all = load_all_cards_from_gsheets()
 
-  copies, cover_index = load_species_copies(file_path)
+  # Ricaviamo il nome comune e i dati della specie dal DF
+  user_cards = df_all[df_all["player_name"] == current_user]
+  matched_rows = user_cards[
+      user_cards["common_name"].str.replace("/", "_").str.replace(" ", "_").str.lower()
+      == safe_name
+  ]
 
-  # GESTIONE CAMBIO COPERTINA
-  cover_idx_to_set = st.query_params.get("set_cover", None)
-  if cover_idx_to_set is not None:
-    try:
-      idx = int(cover_idx_to_set)
-      if 0 <= idx < len(copies):
-        save_species_copies(file_path, copies, cover_index=idx)
-        del st.query_params["set_cover"]
-        st.success("⭐ Copertina aggiornata con successo!")
-        time.sleep(0.5)
-        st.rerun()
-    except Exception:
-      pass
+  cover_obs_id = st.query_params.get("set_cover", None)
+  if cover_obs_id is not None:
+    if not matched_rows.empty:
+      c_name = matched_rows.iloc[0]["common_name"]
+      update_cover_in_gsheets(current_user, c_name, cover_obs_id)
+      del st.query_params["set_cover"]
+      st.success("⭐ Copertina aggiornata con successo!")
+      time.sleep(0.5)
+      st.rerun()
 
-  if copies:
-    c_name = copies[0]["common_name"]
-    l_name = copies[0]["latin_name"]
-    rarity = copies[0]["rarity"]
+  if not matched_rows.empty:
+    c_name = matched_rows.iloc[0]["common_name"]
+    l_name = matched_rows.iloc[0]["latin_name"]
+    rarity = matched_rows.iloc[0]["rarity"]
   else:
-    c_name = safe_name
-    l_name = ""
-    rarity = ""
+    c_name, l_name, rarity = safe_name, "", ""
 
   st.markdown(
       f"""<div style='font-family: Arial; text-align: center;'>
 <h2>📚 Album Dedicato: {c_name}</h2>
-<p style='font-style: italic; color: #555;'>{l_name} | Rarità: <b>{rarity}</b> | Esemplari collezionati: <b>{len(copies)}</b></p>
-<p style='color: #27ae60; font-size: 12px; margin-bottom: 20px;'>✨ La carta contrassegnata in giallo è attualmente in mostra come copertina nell'Album Generale.</p>
+<p style='font-style: italic; color: #555;'>{l_name} | Rarità: <b>{rarity}</b> | Esemplari collezionati: <b>{len(matched_rows)}</b></p>
 </div>""",
       unsafe_allow_html=True,
   )
 
   html_grid = "<div style='font-family: Arial; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 10px;'>"
-  for idx, c in enumerate(copies):
-    r_key = c["rarity"].upper()
+  for idx, (_, c) in enumerate(matched_rows.iterrows()):
+    r_key = str(c["rarity"]).upper()
     theme = rarity_theme.get(
         r_key, {"bg": "#ffffff", "border": "#333", "text": "#333"}
     )
-    inat_url = (
-        f"https://www.inaturalist.org/observations/{c['obs_id']}"
-        if c.get("obs_id")
-        else "https://www.inaturalist.org"
+    is_cover = bool(c["is_cover"]) or (
+        idx == 0 and not matched_rows["is_cover"].any()
     )
-    wiki_url = f"https://it.wikipedia.org/wiki/Special:Search?search={c['latin_name']}"
 
-    is_current_cover = idx == cover_index
-    badge_text = (
-        f"⭐ Copertina (Copia #{idx+1})"
-        if is_current_cover
-        else f"Copia #{idx+1}"
-    )
-    badge_bg = "#f1c40f" if is_current_cover else "#e74c3c"
-    badge_color = "#000" if is_current_cover else "#fff"
+    badge_text = f"⭐ Copertina (Copia #{idx+1})" if is_cover else f"Copia #{idx+1}"
+    badge_bg = "#f1c40f" if is_cover else "#e74c3c"
+    badge_color = "#000" if is_cover else "#fff"
 
-    html_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.25); color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
+    html_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 210px; padding: 10px; text-align: center; color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
 <div>
     <div style='background: {badge_bg}; color: {badge_color}; border-radius: 6px; padding: 3px 6px; font-size: 9px; font-weight: bold; margin-bottom: 6px; display: inline-block;'>{badge_text}</div>
-    <img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-    <div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left; line-height: 1.3;'>
+    <img src='{c['image_url']}' style='width: 100%; height: 120px; object-fit: cover; border-radius: 6px;' onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+    <div style='background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 6px; margin-top: 8px; font-size: 10px; text-align: left;'>
     <div>📍 <b>Luogo:</b> {c['place_guess']}</div>
     <div>📷 <b>Foto:</b> {c['user_login']}</div>
     </div>
 </div>
 <div>
     <div style='margin-top: 8px;'>
-        <a href='?user={current_user}&species={safe_name}&set_cover={idx}' target='_self' style='display: block; background: #f39c12; color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);'>⭐ Imposta Copertina</a>
-    </div>
-    <div style='margin-top: 6px; display: flex; justify-content: space-around; font-size: 11px; font-weight: bold;'>
-    <a href='{inat_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>vedi oss.</a>
-    <a href='{wiki_url}' target='_blank' style='color: {theme['text']}; text-decoration: underline;'>info wiki</a>
+        <a href='?user={current_user}&species={safe_name}&set_cover={c['obs_id']}' target='_self' style='display: block; background: #f39c12; color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 10px; font-weight: bold;'>⭐ Imposta Copertina</a>
     </div>
 </div>
 </div>"""
@@ -560,39 +463,25 @@ elif st.session_state.page == "species_detail":
       st.session_state.page = "album"
       st.rerun()
   with col_b2:
-    if st.button(
-        "Torna al Menu 🏠", use_container_width=True, key="menu_species_detail"
-    ):
+    if st.button("Torna al Menu 🏠", use_container_width=True):
       st.session_state.page = "menu"
       st.rerun()
 
 # D. VISUALIZZAZIONE ALBUM GENERALE
 elif st.session_state.page == "album":
-  if st.button(
-      "Torna al Menu 🏠", use_container_width=True, key="menu_album_top"
-  ):
+  if st.button("Torna al Menu 🏠", use_container_width=True):
     st.session_state.page = "menu"
     st.rerun()
 
+  df_all = load_all_cards_from_gsheets()
+  user_cards = df_all[df_all["player_name"] == current_user]
+
   unlocked_species = {}
-  if os.path.exists(ALBUM_DIR):
-    for filename in os.listdir(ALBUM_DIR):
-      if filename.endswith(".json"):
-        file_path = os.path.join(ALBUM_DIR, filename)
-        try:
-          copies, cover_index = load_species_copies(file_path)
-          if copies:
-            safe_name = filename.replace(".json", "")
-            safe_cover_idx = (
-                cover_index if 0 <= cover_index < len(copies) else 0
-            )
-            unlocked_species[safe_name] = {
-                "copies": copies,
-                "cover_index": safe_cover_idx,
-                "sample_card": copies[safe_cover_idx],
-            }
-        except:
-          pass
+  for c_name, group in user_cards.groupby("common_name"):
+    safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
+    cover_row = group[group["is_cover"] == True]
+    sample = cover_row.iloc[0] if not cover_row.empty else group.iloc[0]
+    unlocked_species[safe_name] = {"count": len(group), "sample": sample}
 
   total_species = len(species_data)
   found_count = len(unlocked_species)
@@ -608,10 +497,8 @@ elif st.session_state.page == "album":
       unsafe_allow_html=True,
   )
 
-  # --- SEZIONE FILTRI PER RARITÀ E GENERE ---
+  # --- FILTRI ---
   st.write("---")
-  st.markdown("### 🔍 Filtri Album")
-
   all_rarities = sorted(
       list(set(sp.get("Rarità", "COM").upper() for sp in species_data))
   )
@@ -645,15 +532,7 @@ elif st.session_state.page == "album":
         if sp.get("Nome Latino", "").strip().startswith(filter_genus)
     ]
 
-  st.markdown(
-      f"<p style='font-size: 13px; color: #555; text-align: center;'>Visualizzando"
-      f" <b>{len(filtered_species)}</b> specie in base ai filtri"
-      " selezionati.</p>",
-      unsafe_allow_html=True,
-  )
-  st.write("---")
-
-  # --- GRIGLIA FLUIDA STILE RIEPILOGO PACCHETTO ---
+  # GRIGLIA
   html_album_grid = "<div style='font-family: Arial; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 10px;'>"
 
   for sp in filtered_species:
@@ -662,81 +541,35 @@ elif st.session_state.page == "album":
     safe_name = c_name.replace("/", "_").replace(" ", "_").lower()
 
     if safe_name in unlocked_species:
-      item_data = unlocked_species[safe_name]
-      copies_list = item_data["copies"]
-      cnt = len(copies_list)
-      sample_card = item_data["sample_card"]
-      r_key = sample_card["rarity"].upper()
+      data = unlocked_species[safe_name]
+      cnt = data["count"]
+      sample_card = data["sample"]
+      r_key = str(sample_card["rarity"]).upper()
       theme = rarity_theme.get(
           r_key, {"bg": "#27ae60", "border": "#1e8449", "text": "#ecf0f1"}
       )
 
-      html_album_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.2); color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
+      html_album_grid += f"""<div style='background-color: {theme['bg']}; border: 3px solid {theme['border']}; border-radius: 12px; width: 155px; padding: 8px; text-align: center; color: {theme['text']}; display: flex; flex-direction: column; justify-content: space-between;'>
 <div>
-    <div style='font-size: 10px; font-weight: bold; margin-bottom: 4px; text-transform: uppercase;'>{r_key}</div>
-    <div style='background-color: #000; background-image: url("{sample_card['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 110px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2);'></div>
+    <div style='font-size: 10px; font-weight: bold;'>{r_key}</div>
+    <div style='background-color: #000; background-image: url("{sample_card['image_url']}"); background-size: cover; background-position: center; width: 100%; height: 110px; border-radius: 6px;'></div>
     <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{c_name}</div>
     <div style='font-size: 9px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic;'>{l_name}</div>
 </div>
 <div style='margin-top: 8px;'>
-    <a href='?user={current_user}&species={safe_name}' target='_self' style='display: block; background: rgba(0,0,0,0.3); color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 11px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2);'>x{cnt} copie 📖</a>
+    <a href='?user={current_user}&species={safe_name}' target='_self' style='display: block; background: rgba(0,0,0,0.3); color: white; text-decoration: none; padding: 5px; border-radius: 6px; font-size: 11px; font-weight: bold;'>x{cnt} copie 📖</a>
 </div>
 </div>"""
     else:
       html_album_grid += """<div style='background-color: #34495e; border: 3px dashed #7f8c8d; border-radius: 12px; width: 155px; padding: 8px; text-align: center; opacity: 0.5; color: #bdc3c7; display: flex; flex-direction: column; justify-content: space-between;'>
 <div>
-    <div style='font-size: 9px; font-weight: bold; margin-bottom: 4px;'>MANCANTE</div>
+    <div style='font-size: 9px; font-weight: bold;'>MANCANTE</div>
     <div style='width: 100%; height: 110px; background: #2c3e50; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 24px;'>❓</div>
     <div style='font-weight: bold; font-size: 11px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>???</div>
-    <div style='font-size: 9px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>Sconosciuto</div>
+    <div style='font-size: 9px; font-style: italic;'>Sconosciuto</div>
 </div>
-<div style='margin-top: 8px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 6px; font-size: 11px; font-weight: bold; color: #7f8c8d;'>
-    🔒 x0 copie
-</div>
+<div style='margin-top: 8px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 6px; font-size: 11px; color: #7f8c8d;'>🔒 x0 copie</div>
 </div>"""
 
   html_album_grid += "</div>"
   st.markdown(html_album_grid, unsafe_allow_html=True)
-  st.write("")
-
-  # --- PANNELLO BACKUP & RIPRISTINO ALBUM ---
-  st.write("---")
-  with st.expander("💾 Backup e Ripristino Collezione (Cambio Dispositivo)"):
-    st.markdown(
-        "<p style='font-size: 13px; color: #555;'>Scarica un file di backup"
-        " per trasferire le tue carte su un altro telefono o ripristina una"
-        " collezione precedentemente salvata.</p>",
-        unsafe_allow_html=True,
-    )
-
-    col_exp, col_imp = st.columns(2)
-
-    with col_exp:
-      json_data = export_user_album_to_json()
-      st.download_button(
-          label="⬇️ Scarica Backup Album",
-          data=json_data,
-          file_name=f"backup_album_{current_user}.json",
-          mime="application/json",
-          use_container_width=True,
-      )
-
-    with col_imp:
-      uploaded_backup = st.file_uploader(
-          "Carica backup (.json)", type=["json"], label_visibility="collapsed"
-      )
-      if uploaded_backup is not None:
-        if st.button("🔄 Ripristina Album", use_container_width=True):
-          if import_user_album_from_json(uploaded_backup):
-            st.success("✅ Album ripristinato con successo!")
-            time.sleep(1)
-            st.rerun()
-          else:
-            st.error("❌ Errore durante il ripristino del file.")
-
-  st.write("---")
-  if st.button(
-      "Torna al Menu 🏠", use_container_width=True, key="menu_album_bottom"
-  ):
-    st.session_state.page = "menu"
-    st.rerun()

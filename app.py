@@ -4,7 +4,8 @@ import random
 import time
 import pandas as pd
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
+import gspread
+from google.oauth2.service_account import Credentials
 
 # --- 1. CONFIGURAZIONE PAGINA E PERCORSI ---
 st.set_page_config(
@@ -15,59 +16,84 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_FILE = os.path.join(BASE_DIR, "scimmie.json")
 TXT_FILE = os.path.join(BASE_DIR, "osservazioni.txt")
 
-# --- 1.2 CONNESSIONE A GOOGLE SHEETS ---
-conn = st.connection("gsheets", type=GSheetsConnection)
+# --- 1.2 CONNESSIONE A GOOGLE SHEETS (GSPREAD) ---
+def get_gspread_client():
+    """Inizializza la connessione a Google Sheets usando i Secrets di Streamlit."""
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    secrets_dict = dict(st.secrets["connections"]["gsheets"])
+    # Estrae il dizionario JSON dal blocco service_account_json dei secrets
+    if "service_account_json" in secrets_dict:
+        import json
+        if isinstance(secrets_dict["service_account_json"], str):
+            sa_info = json.loads(secrets_dict["service_account_json"])
+        else:
+            sa_info = secrets_dict["service_account_json"]
+    else:
+        sa_info = secrets_dict
 
+    creds = Credentials.from_service_account_info(sa_info, scopes=scope)
+    client = gspread.authorize(creds)
+    return client
 
 def load_all_cards_from_gsheets():
-  """Carica tutte le carte salvate nel Foglio Google."""
-  try:
-    df = conn.read(worksheet="carte", ttl="0s")
-    return df
-  except Exception:
-    return pd.DataFrame(
-        columns=[
-            "player_name",
-            "common_name",
-            "latin_name",
-            "rarity",
-            "image_url",
-            "place_guess",
-            "user_login",
-            "obs_id",
-            "is_cover",
-        ]
-    )
-
+    """Carica tutte le carte salvate nel Foglio Google restituendo un DataFrame."""
+    try:
+        client = get_gspread_client()
+        spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sheet = client.open_by_url(spreadsheet_url).worksheet("carte")
+        data = sheet.get_all_records()
+        if not data:
+            return pd.DataFrame(columns=[
+                "player_name", "common_name", "latin_name", "rarity", 
+                "image_url", "place_guess", "user_login", "obs_id", "is_cover"
+            ])
+        return pd.DataFrame(data)
+    except Exception as e:
+        return pd.DataFrame(columns=[
+            "player_name", "common_name", "latin_name", "rarity", 
+            "image_url", "place_guess", "user_login", "obs_id", "is_cover"
+        ])
 
 def save_card_to_gsheets(card_data, player_name):
-  """Salva una singola nuova carta sul Foglio Google."""
-  df = load_all_cards_from_gsheets()
-  new_row = pd.DataFrame([{
-      "player_name": player_name,
-      "common_name": card_data["common_name"],
-      "latin_name": card_data["latin_name"],
-      "rarity": card_data["rarity"],
-      "image_url": card_data["image_url"],
-      "place_guess": card_data["place_guess"],
-      "user_login": card_data["user_login"],
-      "obs_id": card_data["obs_id"],
-      "is_cover": False,
-  }])
-  updated_df = pd.concat([df, new_row], ignore_index=True)
-  conn.update(worksheet="carte", data=updated_df)
-
+    """Aggiunge una nuova carta in coda al Foglio Google in modo sicuro."""
+    try:
+        client = get_gspread_client()
+        spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sheet = client.open_by_url(spreadsheet_url).worksheet("carte")
+        row = [
+            player_name,
+            card_data["common_name"],
+            card_data["latin_name"],
+            card_data["rarity"],
+            card_data["image_url"],
+            card_data["place_guess"],
+            card_data["user_login"],
+            card_data["obs_id"],
+            False
+        ]
+        sheet.append_row(row)
+    except Exception as e:
+        st.error(f"Errore di salvataggio su Cloud: {e}")
 
 def update_cover_in_gsheets(player_name, common_name, selected_obs_id):
-  """Aggiorna quale carta è la copertina dell'album."""
-  df = load_all_cards_from_gsheets()
-  mask = (df["player_name"] == player_name) & (
-      df["common_name"] == common_name
-  )
-  df.loc[mask, "is_cover"] = False
-  df.loc[mask & (df["obs_id"] == selected_obs_id), "is_cover"] = True
-  conn.update(worksheet="carte", data=df)
-
+    """Aggiorna la copertina modificando le celle direttamente nel foglio."""
+    try:
+        client = get_gspread_client()
+        spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sheet = client.open_by_url(spreadsheet_url).worksheet("carte")
+        records = sheet.get_all_records()
+        
+        # Scorriamo le righe per trovare corrispondenze e aggiornare la colonna is_cover
+        for idx, row in enumerate(records, start=2): # start=2 perché la riga 1 è l'intestazione
+            if str(row.get("player_name")) == str(player_name) and str(row.get("common_name")) == str(common_name):
+                is_target = str(row.get("obs_id")) == str(selected_obs_id)
+                # Troviamo la colonna "is_cover" (assumendo sia la 9°)
+                sheet.update_cell(idx, 9, is_target)
+    except Exception as e:
+        st.error(f"Errore durante l'aggiornamento della copertina: {e}")
 
 # --- 1.5 SCHERMATA LOGIN / NOME UTENTE ---
 if "player_name" not in st.session_state:
